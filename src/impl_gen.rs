@@ -2,7 +2,7 @@ use serde::Serialize;
 use tera::{Context, Tera};
 
 use crate::traits::SrcCode;
-use crate::{Generics, Trait, Function};
+use crate::{Function, Generics, Trait};
 
 #[derive(Serialize, Default)]
 pub struct Impl {
@@ -13,7 +13,12 @@ pub struct Impl {
 }
 
 impl Impl {
-    pub fn new<S: ToString>(obj_name: S, generics: Generics, impl_trait: Option<Trait>, functions: Vec<Function>) -> Self {
+    pub fn new<S: ToString>(
+        obj_name: S,
+        generics: Generics,
+        impl_trait: Option<Trait>,
+        functions: Vec<Function>,
+    ) -> Self {
         Self {
             obj_name: obj_name.to_string(),
             generics,
