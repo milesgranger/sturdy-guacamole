@@ -2,7 +2,7 @@ use serde::Serialize;
 use tera::{Context, Tera};
 
 use crate::traits::SrcCode;
-use crate::{Field, Generic, Generics};
+use crate::{Field, Generic, Generics, Impl};
 
 #[derive(Default, Serialize)]
 pub struct Struct {
@@ -11,6 +11,7 @@ pub struct Struct {
     pub fields: Vec<Field>,
     pub generics: Generics,
     pub docs: Vec<String>,
+    pub impls: Vec<Impl>,
 }
 
 impl Struct {
@@ -27,6 +28,9 @@ impl Struct {
     pub fn add_generic(&mut self, generic: Generic) {
         self.generics.push(generic)
     }
+    pub fn add_impl(&mut self, impl_block: Impl) {
+        self.impls.push(impl_block)
+    }
 }
 
 impl SrcCode for Struct {
@@ -34,7 +38,12 @@ impl SrcCode for Struct {
         let template = r#"
         {% if struct.is_pub %}pub {% endif %}struct {{ struct.name }}{{ generics }} {
             {% for field in fields %}{{ field }}{% endfor %}
-        }"#;
+        }
+
+        {% for impl in impls %}
+        {{ impl }}
+        {% endfor %}
+        "#;
         let mut context = Context::new();
         context.insert("struct", &self);
 
@@ -45,6 +54,14 @@ impl SrcCode for Struct {
             .collect::<Vec<String>>();
         context.insert("fields", &fields);
         context.insert("generics", &self.generics.generate());
+        context.insert(
+            "impls",
+            &self
+                .impls
+                .iter()
+                .map(|im| im.generate())
+                .collect::<Vec<String>>(),
+        );
         Tera::one_off(template, &context, false).unwrap()
     }
 }

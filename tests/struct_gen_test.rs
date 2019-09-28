@@ -58,4 +58,6 @@ fn test_generic_gen() {
         normalize_whitespace(&src_code),
         normalize_whitespace(&expected)
     );
+
+    // Add basic impl block.
 }
