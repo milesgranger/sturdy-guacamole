@@ -1,5 +1,4 @@
 use serde::Serialize;
-use tera::{Context, Tera};
 
 use crate::traits::SrcCode;
 use crate::{Function, Generics, Trait};

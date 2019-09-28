@@ -1,10 +1,8 @@
-use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 use tera::{Context, Tera};
 
 use crate::traits::SrcCode;
-use crate::Field;
 
 #[derive(Serialize, Deserialize, Default)]
 pub struct Generic {
