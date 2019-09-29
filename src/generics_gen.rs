@@ -30,6 +30,12 @@ impl Generics {
     pub fn push(&mut self, generic: Generic) {
         self.generics.push(generic)
     }
+    pub fn len(&self) -> usize {
+        self.generics.len()
+    }
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
 }
 
 impl SrcCode for Generics {

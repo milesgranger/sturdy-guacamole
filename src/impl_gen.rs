@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 use crate::traits::SrcCode;
-use crate::{Function, Generics, Trait};
+use crate::{Function, Generic, Generics, Trait};
 use tera::{Context, Tera};
 
 #[derive(Serialize, Default)]
@@ -19,16 +19,26 @@ impl Impl {
         mpl.impl_trait = tr8t;
         mpl
     }
+    pub fn add_function(&mut self, func: Function) {
+        self.functions.push(func)
+    }
+    pub fn add_generic(&mut self, generic: Generic) {
+        self.generics.push(generic)
+    }
 }
 
 impl SrcCode for Impl {
     fn generate(&self) -> String {
         let template = r#"
-
-            impl {% if has_trait %}{{ trait_name }} for {% endif %}{{ self.obj_name }}
+            impl{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %} {% if has_trait %}{{ trait_name }} for {% endif %}{{ self.obj_name }}{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %}
+                {% if has_generics %}
+                where
+                    {% for generic in generics %}{{ generic.generic }}: {{ generic.traits | join(sep=" + ") }},
+                    {% endfor %}
+                {% endif %}
             {
                 {% for function in functions %}
-                {{ function }}
+                    {{ function }}
                 {% endfor %}
             }
         "#;
@@ -37,11 +47,27 @@ impl SrcCode for Impl {
         context.insert("has_trait", &self.impl_trait.is_some());
         context.insert(
             "trait_name",
-            &self.impl_trait.as_ref().map(|t| t.name.clone()).unwrap_or("".to_string()),
+            &self
+                .impl_trait
+                .as_ref()
+                .map(|t| t.name.clone())
+                .unwrap_or("".to_string()),
+        );
+        context.insert("has_generics", &!self.generics.is_empty());
+        context.insert("generics", &self.generics.generics);
+        context.insert(
+            "generic_keys",
+            &self
+                .generics
+                .generics
+                .iter()
+                .map(|g| g.generic.clone())
+                .collect::<Vec<String>>(),
         );
         context.insert(
             "functions",
-            &self.functions
+            &self
+                .functions
                 .iter()
                 .map(|f| f.generate())
                 .collect::<Vec<String>>(),

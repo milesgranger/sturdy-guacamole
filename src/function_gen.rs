@@ -2,7 +2,7 @@ use serde::Serialize;
 use tera::{Context, Tera};
 
 use crate::traits::SrcCode;
-use crate::Generics;
+use crate::{Generic, Generics};
 
 /// Represents a function or method. Determined if any `Parameter` contains `self`
 #[derive(Default, Serialize)]
@@ -25,6 +25,15 @@ impl Function {
     pub fn add_parameter(&mut self, param: Parameter) {
         self.parameters.push(param)
     }
+    pub fn add_generic(&mut self, generic: Generic) {
+        self.generics.push(generic)
+    }
+    pub fn set_return_ty<S: ToString>(&mut self, ty: S) {
+        self.return_ty = Some(ty.to_string());
+    }
+    pub fn add_block<S: ToString>(&mut self, block: S) {
+        self.block = block.to_string();
+    }
 }
 
 #[derive(Serialize, Default)]
@@ -44,7 +53,12 @@ impl Parameter {
 impl SrcCode for Function {
     fn generate(&self) -> String {
         let template = r#"
-        {% if self.is_pub %}pub {% endif %}fn {{ self.name }}({{ parameters | join(sep=", ") }}) -> {{ return_ty }}
+        {% if self.is_pub %}pub {% endif %}fn {{ self.name }}{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %}({{ parameters | join(sep=", ") }}) -> {{ return_ty }}
+            {% if has_generics %}
+            where
+                {% for generic in generics %}{{ generic.generic }}: {{ generic.traits | join(sep=" + ") }},
+                {% endfor %}
+            {% endif %}
         {
             {{ self.block }}
         }
@@ -54,6 +68,17 @@ impl SrcCode for Function {
         context.insert(
             "return_ty",
             &self.return_ty.as_ref().unwrap_or(&"()".to_string()),
+        );
+        context.insert("has_generics", &!self.generics.is_empty());
+        context.insert("generics", &self.generics.generics);
+        context.insert(
+            "generic_keys",
+            &self
+                .generics
+                .generics
+                .iter()
+                .map(|g| g.generic.clone())
+                .collect::<Vec<String>>(),
         );
         context.insert(
             "parameters",
