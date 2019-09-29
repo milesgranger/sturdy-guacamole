@@ -25,7 +25,7 @@ impl Struct {
         self.fields.push(field)
     }
     pub fn add_generic(&mut self, generic: Generic) {
-        self.generics.push(generic)
+        self.generics.add_generic(generic)
     }
 }
 

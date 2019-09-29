@@ -23,7 +23,7 @@ impl Impl {
         self.functions.push(func)
     }
     pub fn add_generic(&mut self, generic: Generic) {
-        self.generics.push(generic)
+        self.generics.add_generic(generic)
     }
 }
 

@@ -27,7 +27,7 @@ impl Generics {
     pub fn new(generics: Vec<Generic>) -> Self {
         Self { generics }
     }
-    pub fn push(&mut self, generic: Generic) {
+    pub fn add_generic(&mut self, generic: Generic) {
         self.generics.push(generic)
     }
     pub fn len(&self) -> usize {

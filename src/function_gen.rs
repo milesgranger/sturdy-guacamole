@@ -27,6 +27,9 @@ impl FunctionSignature {
         f.is_pub = is_pub;
         f
     }
+    pub fn add_parameter(&mut self, param: Parameter) {
+        self.parameters.push(param)
+    }
 }
 
 impl SrcCode for FunctionSignature {
@@ -103,7 +106,7 @@ impl Function {
         self.signature.parameters.push(param)
     }
     pub fn add_generic(&mut self, generic: Generic) {
-        self.signature.generics.push(generic)
+        self.signature.generics.add_generic(generic)
     }
     pub fn set_return_ty<S: ToString>(&mut self, ty: S) {
         self.signature.return_ty = Some(ty.to_string());
