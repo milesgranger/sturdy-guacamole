@@ -32,13 +32,10 @@ impl FunctionSignature {
 impl SrcCode for FunctionSignature {
     fn generate(&self) -> String {
         let template = r#"
-        {% if self.is_pub %}pub {% endif %}fn {{ self.name }}{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %}({{ parameters | join(sep=", ") }}) -> {{ return_ty }}
-            {% if has_generics %}
+        {% if self.is_pub %}pub {% endif %}fn {{ self.name }}{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %}({{ parameters | join(sep=", ") }}) -> {{ return_ty }}{% if has_generics %}
             where
                 {% for generic in generics %}{{ generic.generic }}: {{ generic.traits | join(sep=" + ") }},
-                {% endfor %}
-            {% endif %}
-        "#;
+                {% endfor %}{% endif %}"#;
         let mut context = Context::new();
         context.insert("self", &self);
         context.insert(
@@ -70,7 +67,7 @@ impl SrcCode for FunctionSignature {
 
 #[derive(Default, Serialize)]
 pub struct FunctionBody {
-    body: String
+    body: String,
 }
 
 impl SrcCode for FunctionBody {
@@ -84,16 +81,16 @@ impl SrcCode for FunctionBody {
     }
 }
 
-
-
 impl<S> From<S> for FunctionBody
-    where S: ToString
+where
+    S: ToString,
 {
     fn from(body: S) -> FunctionBody {
-        FunctionBody { body: body.to_string() }
+        FunctionBody {
+            body: body.to_string(),
+        }
     }
 }
-
 
 impl Function {
     pub fn new<S: ToString>(name: S, is_pub: bool) -> Self {
