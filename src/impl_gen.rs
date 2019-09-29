@@ -2,6 +2,7 @@ use serde::Serialize;
 
 use crate::traits::SrcCode;
 use crate::{Function, Generics, Trait};
+use tera::{Context, Tera};
 
 #[derive(Serialize, Default)]
 pub struct Impl {
@@ -12,30 +13,39 @@ pub struct Impl {
 }
 
 impl Impl {
-    pub fn new<S: ToString>(
-        obj_name: S,
-        generics: Generics,
-        impl_trait: Option<Trait>,
-        functions: Vec<Function>,
-    ) -> Self {
-        Self {
-            obj_name: obj_name.to_string(),
-            generics,
-            functions,
-            impl_trait,
-        }
+    pub fn new<S: ToString>(obj_name: S, tr8t: Option<Trait>) -> Self {
+        let mut mpl = Self::default();
+        mpl.obj_name = obj_name.to_string();
+        mpl.impl_trait = tr8t;
+        mpl
     }
 }
 
 impl SrcCode for Impl {
     fn generate(&self) -> String {
         let template = r#"
-            impl for {{ self.obj_name }} {
+
+            impl {% if has_trait %}{{ trait_name }} for {% endif %}{{ self.obj_name }}
+            {
                 {% for function in functions %}
                 {{ function }}
                 {% endfor %}
             }
         "#;
-        unimplemented!()
+        let mut context = Context::new();
+        context.insert("self", &self);
+        context.insert("has_trait", &self.impl_trait.is_some());
+        context.insert(
+            "trait_name",
+            &self.impl_trait.as_ref().map(|t| t.name.clone()).unwrap_or("".to_string()),
+        );
+        context.insert(
+            "functions",
+            &self.functions
+                .iter()
+                .map(|f| f.generate())
+                .collect::<Vec<String>>(),
+        );
+        Tera::one_off(template, &context, false).unwrap()
     }
 }

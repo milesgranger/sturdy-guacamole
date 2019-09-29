@@ -1,4 +1,3 @@
-
 use serde::{Deserialize, Serialize};
 use tera::{Context, Tera};
 
