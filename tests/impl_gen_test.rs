@@ -1,5 +1,4 @@
 use proffer::*;
-use tera::ast::ExprVal::FunctionCall;
 
 fn normalize_whitespace(s: &str) -> String {
     s.split("\n")
@@ -10,7 +9,7 @@ fn normalize_whitespace(s: &str) -> String {
 
 #[test]
 fn impl_basic_gen_with_trait() {
-    let mut ipl = Impl::new("That", Some(Trait::new("This")));
+    let mut ipl = Impl::new("That", Some(Trait::new("This", true)));
 
     let expected = r#"
         impl This for That
