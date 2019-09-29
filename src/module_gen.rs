@@ -65,6 +65,7 @@ pub struct Module {
     sub_modules: Vec<Module>,
     inner_annotations: Vec<String>,
     outer_annotations: Vec<String>,
+    use_stmts: Vec<String>,
 }
 
 impl Module {
@@ -104,6 +105,11 @@ impl Module {
         self.impls.push(iml);
         self
     }
+    /// Add a `use` statement or similar module level statements
+    pub fn add_use_statement<S: ToString>(mut self, stmt: S) -> Self {
+        self.use_stmts.push(stmt.to_string());
+        self
+    }
     /// Add outer module annotations
     pub fn add_outer_annotation<S: ToString>(mut self, ann: S) -> Self {
         self.outer_annotations.push(ann.to_string());
@@ -132,6 +138,8 @@ impl SrcCode for Module {
         {% for annotation in self.outer_annotations %}{{ annotation }}{% endfor %}
         {% if self.is_pub %}pub {% endif %}mod {{ self.name }}
         {
+            {% for stmt in self.use_stmts %}{{ stmt }}{% endfor %}
+
             {% for annotation in self.inner_annotations %}{{ annotation }}{% endfor %}
             {% for doc in self.docs %}{{ doc }}{% endfor %}
             {% for obj in objs %}{{ obj }}{% endfor %}

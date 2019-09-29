@@ -11,6 +11,7 @@ fn test_module_basic() {
         .add_outer_annotation("#[special_outer_annotation]")
         .add_inner_annotation("#![special_inner_annotation]")
         .add_doc("//! Module level docs")
+        .add_use_statement("use super::*;")
         .add_enum(Enum::new("EnumThingy"));
     let src_code = m.generate();
 
@@ -18,6 +19,8 @@ fn test_module_basic() {
         #[special_outer_annotation]
         pub mod foo
         {
+            use super::*;
+
             #![special_inner_annotation]
             //! Module level docs
 
