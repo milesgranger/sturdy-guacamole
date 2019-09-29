@@ -75,7 +75,7 @@ fn impl_with_generics() {
     method.add_parameter(Parameter::new("bar2", "S"));
     method.set_return_ty("T");
     method.add_generic(Generic::new("S", vec![]));
-    method.add_block("bar");
+    method.set_body("bar");
     ipl.add_function(method);
 
     let expected = r#"
