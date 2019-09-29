@@ -75,9 +75,10 @@ fn impl_with_generics() {
     method.add_parameter(Parameter::new("bar1", "T"));
     method.add_parameter(Parameter::new("bar2", "S"));
     method.set_return_ty("T");
-    method.add_generic(Generic::new("S", vec!["Number"]));
+    method.add_generic(Generic::new("S", vec![]));
     method.add_block("bar");
     ipl.add_function(method);
+
     let expected = r#"
         impl<T> That<T>
             where
@@ -85,7 +86,7 @@ fn impl_with_generics() {
         {
             pub fn foo<S>(bar1: T, bar2: S) -> T
                 where
-                    S: Number,
+                    S: ,
             {
                 bar
             }

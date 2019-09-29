@@ -67,3 +67,27 @@ fn function_with_generic() {
         normalize_whitespace(&src_code)
     );
 }
+
+#[test]
+fn function_with_generic_no_bounds() {
+    let mut function = Function::new("foo", true);
+    function.add_parameter(Parameter::new("bar1", "T"));
+    function.add_parameter(Parameter::new("bar2", "S"));
+    function.add_generic(Generic::new("T", vec![]));
+    function.add_generic(Generic::new("S", vec![]));
+    let expected = r#"
+        pub fn foo<T, S>(bar1: T, bar2: S) -> ()
+            where
+                T: ,
+                S: ,
+        {
+        }
+    "#;
+
+    let src_code = function.generate();
+    println!("{}", &src_code);
+    assert_eq!(
+        normalize_whitespace(expected),
+        normalize_whitespace(&src_code)
+    );
+}
