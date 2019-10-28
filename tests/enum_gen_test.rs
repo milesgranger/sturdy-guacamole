@@ -1,4 +1,5 @@
 use proffer::*;
+use syn::ItemEnum;
 
 #[test]
 fn gen_enum_basic() {
@@ -12,13 +13,15 @@ fn gen_enum_basic() {
     println!("{}", &src_code);
 
     let expected = r#"
-        pub enum Foo {
+        pub enum Foo
+        {
             A,
             B,
         }
     "#;
 
-    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemEnum>(&src_code).unwrap();
 }
 
 #[test]
@@ -41,5 +44,6 @@ fn gen_enum_with_generic() {
             B(T),
         }
     "#;
-    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemEnum>(&src_code).unwrap();
 }

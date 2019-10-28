@@ -1,4 +1,5 @@
 use proffer::*;
+use syn::ItemMod;
 
 #[test]
 fn test_module_basic() {
@@ -20,29 +21,35 @@ fn test_module_basic() {
         #[special_outer_annotation]
         pub mod foo
         {
-            use super::*;
-
             #![special_inner_annotation]
             //! Module level docs
+
+            use super::*;
 
             pub trait Bar
             {
             }
+
             fn foo() -> ()
             {
             }
-            struct Thingy {
+
+            struct Thingy
+            {
             }
+
             impl Thingy
             {
             }
-            enum EnumThingy {
-            }
 
+            enum EnumThingy
+            {
+            }
         }
     "#;
     println!("{}", &src_code);
-    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemMod>(&src_code).unwrap();
 }
 
 #[test]
@@ -78,20 +85,26 @@ fn test_module_submodule() {
                 pub trait Bar
                 {
                 }
+
                 fn foo() -> ()
                 {
                 }
-                struct Thingy {
+
+                struct Thingy
+                {
                 }
+
                 impl Thingy
                 {
                 }
-                enum EnumThingy {
-                }
 
+                enum EnumThingy
+                {
+                }
             }
         }
     "#;
     println!("{}", &src_code);
-    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemMod>(&src_code).unwrap();
 }

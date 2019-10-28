@@ -1,4 +1,5 @@
 use proffer::*;
+use syn::ItemImpl;
 
 #[test]
 fn impl_basic_gen_with_trait() {
@@ -32,6 +33,7 @@ fn impl_basic_gen_with_trait() {
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemImpl>(&src_code).unwrap();
 }
 
 #[test]
@@ -47,7 +49,8 @@ fn impl_basic_gen_without_trait() {
     let src_code = ipl.generate();
     println!("{}", &src_code);
 
-    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemImpl>(&src_code).unwrap();
 }
 
 #[test]
@@ -87,7 +90,8 @@ fn impl_with_generics() {
     let src_code = ipl.generate();
     println!("{}", &src_code);
 
-    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemImpl>(&src_code).unwrap();
 }
 
 #[test]
@@ -109,6 +113,7 @@ fn impl_with_associated_types() {
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemImpl>(&src_code).unwrap();
 }
 
 #[test]
@@ -141,4 +146,5 @@ fn impl_with_associated_type_annotations() {
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemImpl>(&src_code).unwrap();
 }

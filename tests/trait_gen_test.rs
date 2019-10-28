@@ -1,4 +1,5 @@
 use proffer::*;
+use syn::ItemTrait;
 
 #[test]
 fn basic_gen() {
@@ -13,6 +14,7 @@ fn basic_gen() {
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemTrait>(&src_code).unwrap();
 }
 
 #[test]
@@ -34,6 +36,7 @@ fn gen_with_method_signatures() {
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemTrait>(&src_code).unwrap();
 }
 
 #[test]
@@ -66,6 +69,7 @@ fn gen_with_generics() {
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemTrait>(&src_code).unwrap();
 }
 
 #[test]
@@ -97,6 +101,7 @@ fn gen_with_associated_types() {
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemTrait>(&src_code).unwrap();
 }
 
 #[test]
@@ -130,4 +135,5 @@ fn gen_with_associated_type_annotations() {
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+    syn::parse_str::<ItemTrait>(&src_code).unwrap();
 }
