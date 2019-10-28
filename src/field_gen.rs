@@ -7,6 +7,7 @@ use serde::Serialize;
 use tera::{Context, Tera};
 
 use crate::*;
+use crate::internal::HasAnnotations;
 
 /// Create a field
 ///
@@ -40,22 +41,6 @@ impl Field {
         }
     }
 
-    /// Add a single field annotation. ie `#[serde(rename="something")`
-    pub fn add_annotation<S: ToString>(&mut self, annotation: S) -> &mut Self {
-        self.annotations.push(annotation.to_string());
-        self
-    }
-
-    /// Add multiple field annotations at once.
-    pub fn add_annotations<S: ToString, I: IntoIterator<Item = S>>(
-        &mut self,
-        annotations: I,
-    ) -> &mut Self {
-        self.annotations
-            .extend(annotations.into_iter().map(|a| a.to_string()));
-        self
-    }
-
     /// Add a single documentation line for this field
     pub fn add_doc<S: ToString>(&mut self, doc: S) -> &mut Self {
         self.docs.push(doc.to_string());
@@ -71,6 +56,12 @@ impl Field {
     pub fn set_is_pub(&mut self, is_pub: bool) -> &mut Self {
         self.is_pub = is_pub;
         self
+    }
+}
+
+impl HasAnnotations for Field {
+    fn annotations(&mut self) -> &mut Vec<String> {
+        &mut self.annotations
     }
 }
 

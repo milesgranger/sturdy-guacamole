@@ -11,6 +11,7 @@ use tera::{Context, Tera};
 
 use crate::traits::SrcCode;
 use crate::{Generic, Generics};
+use crate::internal::{HasAnnotations, HasInnerAndOuterAnnotations};
 
 /// Represents a function or method. Determined if any `Parameter` contains `self`
 #[derive(Default, Serialize, Clone)]
@@ -58,12 +59,6 @@ impl FunctionSignature {
         self
     }
 
-    /// Add a annotation to this signature
-    pub fn add_annotation<S: ToString>(&mut self, annotation: S) -> &mut Self {
-        self.annotations.push(annotation.to_string());
-        self
-    }
-
     /// Set a return type, if `None` will result in `()` type.
     pub fn set_return_ty<S: ToString>(&mut self, ty: Option<S>) -> &mut Self {
         self.return_ty = ty.map(|s| s.to_string());
@@ -80,6 +75,12 @@ impl FunctionSignature {
     pub fn set_name<S: ToString>(&mut self, name: S) -> &mut Self {
         self.name = name.to_string();
         self
+    }
+}
+
+impl HasAnnotations for FunctionSignature {
+    fn annotations(&mut self) -> &mut Vec<String> {
+        &mut self.annotations
     }
 }
 
@@ -128,11 +129,9 @@ pub struct FunctionBody {
     annotations: Vec<String>,
 }
 
-impl FunctionBody {
-    /// Add a annotation to this body
-    pub fn add_annotation<S: ToString>(&mut self, annotation: S) -> &mut Self {
-        self.annotations.push(annotation.to_string());
-        self
+impl HasAnnotations for FunctionBody {
+    fn annotations(&mut self) -> &mut Vec<String> {
+        &mut self.annotations
     }
 }
 
@@ -168,16 +167,6 @@ impl Function {
         self.signature.generics.add_generic(generic);
         self
     }
-    /// Add outer function annotations
-    pub fn add_outer_annotation<S: ToString>(&mut self, ann: S) -> &mut Self {
-        self.signature.add_annotation(ann);
-        self
-    }
-    /// Add outer function annotations
-    pub fn add_inner_annotation<S: ToString>(&mut self, ann: S) -> &mut Self {
-        self.body.add_annotation(ann);
-        self
-    }
     /// Set the return type of this function
     pub fn set_return_ty<S: ToString>(&mut self, ty: S) -> &mut Self {
         self.signature.return_ty = Some(ty.to_string());
@@ -197,6 +186,16 @@ impl Function {
     pub fn set_body<S: ToString>(&mut self, body: S) -> &mut Self {
         self.body.body = body.to_string();
         self
+    }
+}
+
+impl HasInnerAndOuterAnnotations for Function {
+    fn inner_annotations(&mut self) -> &mut Vec<String> {
+        self.body.annotations()
+    }
+
+    fn outer_annotations(&mut self) -> &mut Vec<String> {
+        self.signature.annotations()
     }
 }
 
@@ -227,11 +226,11 @@ impl Parameter {
             ..Self::default()
         }
     }
+}
 
-    /// Add parameter annotation
-    pub fn add_annotation<S: ToString>(&mut self, ann: S) -> &mut Self {
-        self.annotations.push(ann.to_string());
-        self
+impl HasAnnotations for Parameter {
+    fn annotations(&mut self) -> &mut Vec<String> {
+        &mut self.annotations
     }
 }
 
