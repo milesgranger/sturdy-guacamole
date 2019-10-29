@@ -50,7 +50,6 @@
 use serde::Serialize;
 use tera::{Context, Tera};
 
-use crate::internal::InnerAndOuterAnnotations;
 use crate::*;
 
 /// Represent a module of code
@@ -125,7 +124,7 @@ impl Module {
     }
 }
 
-impl InnerAndOuterAnnotations for Module {
+impl internal::InnerAndOuterAnnotations for Module {
     fn inner_annotations(&mut self) -> &mut Vec<String> {
         &mut self.inner_annotations
     }

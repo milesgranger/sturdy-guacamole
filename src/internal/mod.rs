@@ -1,4 +1,4 @@
-use crate::Field;
+use crate::{Field, Generic};
 
 /// Internal trait to get access to the container storing the annotations.
 /// Used for the generic implementation of `AnnotationExt`
@@ -14,7 +14,13 @@ pub trait InnerAndOuterAnnotations {
 }
 
 /// Internal trait to get access to the container storing the fields.
-/// Used for the generic implementation of `FieldsExt`
+/// Used for the generic implementation of `FieldExt`
 pub trait Fields {
     fn fields(&mut self) -> &mut Vec<Field>;
+}
+
+/// Internal trait to get access to the container storing the generics.
+/// Used for the generic implementation of `GenericExt`
+pub trait Generics {
+    fn generics(&mut self) -> &mut Vec<Generic>;
 }

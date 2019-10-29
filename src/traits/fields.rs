@@ -24,7 +24,7 @@ impl<T: Fields> FieldExt for T {
     /// Add multiple fields at once.
     fn add_fields<'a>(&mut self, fields: impl IntoIterator<Item = &'a Field>) -> &mut Self {
         self.fields()
-            .extend(fields.into_iter().map(|f| f.to_owned()));
+            .extend(fields.into_iter().map(ToOwned::to_owned));
         self
     }
 }

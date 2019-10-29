@@ -6,7 +6,6 @@
 use serde::Serialize;
 use tera::{Context, Tera};
 
-use crate::internal::Fields;
 use crate::*;
 
 /// Represents a `struct` in source code.
@@ -28,12 +27,6 @@ impl Struct {
         }
     }
 
-    /// Add a trait bound to this struct
-    pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
-        self.generics.add_generic(generic);
-        self
-    }
-
     /// Set if this struct is `pub`
     pub fn set_is_pub(&mut self, is_pub: bool) -> &mut Self {
         self.is_pub = is_pub;
@@ -41,9 +34,15 @@ impl Struct {
     }
 }
 
-impl Fields for Struct {
+impl internal::Fields for Struct {
     fn fields(&mut self) -> &mut Vec<Field> {
         &mut self.fields
+    }
+}
+
+impl internal::Generics for Struct {
+    fn generics(&mut self) -> &mut Vec<Generic> {
+        self.generics.generics()
     }
 }
 

@@ -9,9 +9,9 @@
 use serde::Serialize;
 use tera::{Context, Tera};
 
-use crate::internal::{Annotations, InnerAndOuterAnnotations};
+use crate::internal::Annotations;
 use crate::traits::SrcCode;
-use crate::{Generic, Generics};
+use crate::{internal, Generic, Generics};
 
 /// Represents a function or method. Determined if any `Parameter` contains `self`
 #[derive(Default, Serialize, Clone)]
@@ -53,12 +53,6 @@ impl FunctionSignature {
         self
     }
 
-    /// Add a generic to this signature
-    pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
-        self.generics.add_generic(generic);
-        self
-    }
-
     /// Set a return type, if `None` will result in `()` type.
     pub fn set_return_ty<S: ToString>(&mut self, ty: Option<S>) -> &mut Self {
         self.return_ty = ty.map(|s| s.to_string());
@@ -78,9 +72,15 @@ impl FunctionSignature {
     }
 }
 
-impl Annotations for FunctionSignature {
+impl internal::Annotations for FunctionSignature {
     fn annotations(&mut self) -> &mut Vec<String> {
         &mut self.annotations
+    }
+}
+
+impl internal::Generics for FunctionSignature {
+    fn generics(&mut self) -> &mut Vec<Generic> {
+        self.generics.generics()
     }
 }
 
@@ -129,7 +129,7 @@ pub struct FunctionBody {
     annotations: Vec<String>,
 }
 
-impl Annotations for FunctionBody {
+impl internal::Annotations for FunctionBody {
     fn annotations(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }
@@ -162,11 +162,6 @@ impl Function {
         self.signature.parameters.push(param);
         self
     }
-    /// Add a new trait bound generic to this function
-    pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
-        self.signature.generics.add_generic(generic);
-        self
-    }
     /// Set the return type of this function
     pub fn set_return_ty<S: ToString>(&mut self, ty: S) -> &mut Self {
         self.signature.return_ty = Some(ty.to_string());
@@ -189,13 +184,19 @@ impl Function {
     }
 }
 
-impl InnerAndOuterAnnotations for Function {
+impl internal::InnerAndOuterAnnotations for Function {
     fn inner_annotations(&mut self) -> &mut Vec<String> {
         self.body.annotations()
     }
 
     fn outer_annotations(&mut self) -> &mut Vec<String> {
         self.signature.annotations()
+    }
+}
+
+impl internal::Generics for Function {
+    fn generics(&mut self) -> &mut Vec<Generic> {
+        self.signature.generics.generics()
     }
 }
 
@@ -228,7 +229,7 @@ impl Parameter {
     }
 }
 
-impl Annotations for Parameter {
+impl internal::Annotations for Parameter {
     fn annotations(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }

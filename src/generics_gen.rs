@@ -7,6 +7,7 @@
 use serde::{Deserialize, Serialize};
 use tera::{Context, Tera};
 
+use crate::internal;
 use crate::traits::SrcCode;
 
 /// Represent a single trait bound
@@ -37,16 +38,16 @@ pub struct Generics {
     pub(crate) generics: Vec<Generic>,
 }
 
+impl internal::Generics for Generics {
+    fn generics(&mut self) -> &mut Vec<Generic> {
+        &mut self.generics
+    }
+}
+
 impl Generics {
     /// Create a new collection of `Generic`s.
     pub fn new(generics: Vec<Generic>) -> Self {
         Self { generics }
-    }
-
-    /// Add a `Generic`
-    pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
-        self.generics.push(generic);
-        self
     }
 
     /// Check how many generics are held here
