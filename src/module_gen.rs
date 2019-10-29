@@ -50,8 +50,8 @@
 use serde::Serialize;
 use tera::{Context, Tera};
 
-use crate::*;
 use crate::internal::InnerAndOuterAnnotations;
+use crate::*;
 
 /// Represent a module of code
 #[derive(Default, Serialize, Clone)]

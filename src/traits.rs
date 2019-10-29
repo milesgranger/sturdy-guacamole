@@ -18,10 +18,13 @@ pub trait AnnotationExt {
     fn add_annotation(&mut self, annotation: impl ToString) -> &mut Self;
 
     /// Add multiple annotations at once.
-    fn add_annotations(&mut self, annotations: impl IntoIterator<Item = impl ToString>) -> &mut Self;
+    fn add_annotations(
+        &mut self,
+        annotations: impl IntoIterator<Item = impl ToString>,
+    ) -> &mut Self;
 }
 
-impl <T: Annotations> AnnotationExt for T {
+impl<T: Annotations> AnnotationExt for T {
     /// Add a single annotation.
     fn add_annotation(&mut self, annotation: impl ToString) -> &mut Self {
         self.annotations().push(annotation.to_string());
@@ -29,8 +32,12 @@ impl <T: Annotations> AnnotationExt for T {
     }
 
     /// Add multiple annotations at once.
-    fn add_annotations(&mut self, annotations: impl IntoIterator<Item = impl ToString>) -> &mut Self {
-        self.annotations().extend(annotations.into_iter().map(|a| a.to_string()));
+    fn add_annotations(
+        &mut self,
+        annotations: impl IntoIterator<Item = impl ToString>,
+    ) -> &mut Self {
+        self.annotations()
+            .extend(annotations.into_iter().map(|a| a.to_string()));
         self
     }
 }
@@ -41,16 +48,22 @@ pub trait InnerAndOuterAnnotationExt {
     fn add_inner_annotation(&mut self, annotation: impl ToString) -> &mut Self;
 
     /// Add multiple inner annotations at once.
-    fn add_inner_annotations(&mut self, annotations: impl IntoIterator<Item = impl ToString>) -> &mut Self;
+    fn add_inner_annotations(
+        &mut self,
+        annotations: impl IntoIterator<Item = impl ToString>,
+    ) -> &mut Self;
 
     /// Add a single outer annotation.
     fn add_outer_annotation(&mut self, annotation: impl ToString) -> &mut Self;
 
     /// Add multiple outer annotations at once.
-    fn add_outer_annotations(&mut self, annotations: impl IntoIterator<Item = impl ToString>) -> &mut Self;
+    fn add_outer_annotations(
+        &mut self,
+        annotations: impl IntoIterator<Item = impl ToString>,
+    ) -> &mut Self;
 }
 
-impl <T: InnerAndOuterAnnotations> InnerAndOuterAnnotationExt for T {
+impl<T: InnerAndOuterAnnotations> InnerAndOuterAnnotationExt for T {
     /// Add a single inner annotation.
     fn add_inner_annotation(&mut self, annotation: impl ToString) -> &mut Self {
         self.inner_annotations().push(annotation.to_string());
@@ -58,20 +71,28 @@ impl <T: InnerAndOuterAnnotations> InnerAndOuterAnnotationExt for T {
     }
 
     /// Add multiple inner annotations at once.
-    fn add_inner_annotations(&mut self, annotations: impl IntoIterator<Item = impl ToString>) -> &mut Self {
-        self.inner_annotations().extend(annotations.into_iter().map(|a| a.to_string()));
+    fn add_inner_annotations(
+        &mut self,
+        annotations: impl IntoIterator<Item = impl ToString>,
+    ) -> &mut Self {
+        self.inner_annotations()
+            .extend(annotations.into_iter().map(|a| a.to_string()));
         self
     }
 
     /// Add a single outer annotation.
-    fn add_outer_annotation(&mut self, annotation: impl ToString) -> &mut Self{
+    fn add_outer_annotation(&mut self, annotation: impl ToString) -> &mut Self {
         self.outer_annotations().push(annotation.to_string());
         self
     }
 
     /// Add multiple outer annotations at once.
-    fn add_outer_annotations(&mut self, annotations: impl IntoIterator<Item = impl ToString>) -> &mut Self{
-        self.outer_annotations().extend(annotations.into_iter().map(|a| a.to_string()));
+    fn add_outer_annotations(
+        &mut self,
+        annotations: impl IntoIterator<Item = impl ToString>,
+    ) -> &mut Self {
+        self.outer_annotations()
+            .extend(annotations.into_iter().map(|a| a.to_string()));
         self
     }
 }

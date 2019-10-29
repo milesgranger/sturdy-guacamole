@@ -6,8 +6,8 @@
 use serde::{Deserialize, Serialize};
 use tera::{Context, Tera};
 
-use crate::traits::SrcCode;
 use crate::internal::Annotations;
+use crate::traits::SrcCode;
 
 /// Represent the declaration of a associated type in a trait
 #[derive(Serialize, Deserialize, Default, Clone)]

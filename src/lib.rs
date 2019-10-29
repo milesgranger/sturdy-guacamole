@@ -53,13 +53,13 @@ pub mod field_gen;
 pub mod function_gen;
 pub mod generics_gen;
 pub mod impl_gen;
+mod internal;
 pub mod module_gen;
 pub mod struct_gen;
 pub mod trait_gen;
 pub mod traits;
-pub mod associated_types_gen;
-mod internal;
 
+pub use associated_types_gen::*;
 pub use associated_types_gen::*;
 pub use enum_gen::*;
 pub use field_gen::*;
@@ -69,7 +69,6 @@ pub use impl_gen::*;
 pub use module_gen::*;
 pub use struct_gen::*;
 pub use trait_gen::*;
-pub use associated_types_gen::*;
 pub use traits::*;
 
 /// Helper function throughout tests and documentation

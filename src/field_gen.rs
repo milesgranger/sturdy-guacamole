@@ -6,8 +6,8 @@
 use serde::Serialize;
 use tera::{Context, Tera};
 
-use crate::*;
 use crate::internal::Annotations;
+use crate::*;
 
 /// Create a field
 ///
