@@ -44,8 +44,7 @@ fn generic_gen() {
                 .add_trait_bounds(vec!["ToString", "Number"])
                 .to_owned(),
         )
-        .add_field(Field::new("field1", "S"))
-        .add_field(Field::new("field2", "T"))
+        .add_fields(&[Field::new("field1", "S"), Field::new("field2", "T")])
         .to_owned();
     let src_code = s.generate();
     println!("{}", &src_code);

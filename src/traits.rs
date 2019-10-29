@@ -2,7 +2,8 @@
 //! Trait(s) specific to code generation objects within this crate.
 //!
 
-use crate::internal::{Annotations, InnerAndOuterAnnotations};
+use crate::internal::{Annotations, Fields, InnerAndOuterAnnotations};
+use crate::Field;
 
 /// Trait implemented for elements representing the ability to render as
 /// raw source code.
@@ -93,6 +94,30 @@ impl<T: InnerAndOuterAnnotations> InnerAndOuterAnnotationExt for T {
     ) -> &mut Self {
         self.outer_annotations()
             .extend(annotations.into_iter().map(|a| a.to_string()));
+        self
+    }
+}
+
+/// Provides methods to add fields to elements.
+pub trait FieldExt {
+    /// Add a single field.
+    fn add_field(&mut self, field: Field) -> &mut Self;
+
+    /// Add multiple fields at once.
+    fn add_fields<'a>(&mut self, fields: impl IntoIterator<Item = &'a Field>) -> &mut Self;
+}
+
+impl<T: Fields> FieldExt for T {
+    /// Add a single field.
+    fn add_field(&mut self, field: Field) -> &mut Self {
+        self.fields().push(field);
+        self
+    }
+
+    /// Add multiple fields at once.
+    fn add_fields<'a>(&mut self, fields: impl IntoIterator<Item = &'a Field>) -> &mut Self {
+        self.fields()
+            .extend(fields.into_iter().map(|f| f.to_owned()));
         self
     }
 }
