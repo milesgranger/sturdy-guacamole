@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use tera::{Context, Tera};
 
 use crate::traits::SrcCode;
-use crate::internal::HasAnnotations;
+use crate::internal::Annotations;
 
 /// Represent the declaration of a associated type in a trait
 #[derive(Serialize, Deserialize, Default, Clone)]
@@ -32,7 +32,7 @@ impl AssociatedTypeDeclaration {
     }
 }
 
-impl HasAnnotations for AssociatedTypeDeclaration {
+impl Annotations for AssociatedTypeDeclaration {
     fn annotations(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }
@@ -71,7 +71,7 @@ impl AssociatedTypeDefinition {
     }
 }
 
-impl HasAnnotations for AssociatedTypeDefinition {
+impl Annotations for AssociatedTypeDefinition {
     fn annotations(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }

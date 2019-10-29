@@ -51,7 +51,7 @@ use serde::Serialize;
 use tera::{Context, Tera};
 
 use crate::*;
-use crate::internal::HasInnerAndOuterAnnotations;
+use crate::internal::InnerAndOuterAnnotations;
 
 /// Represent a module of code
 #[derive(Default, Serialize, Clone)]
@@ -125,7 +125,7 @@ impl Module {
     }
 }
 
-impl HasInnerAndOuterAnnotations for Module {
+impl InnerAndOuterAnnotations for Module {
     fn inner_annotations(&mut self) -> &mut Vec<String> {
         &mut self.inner_annotations
     }

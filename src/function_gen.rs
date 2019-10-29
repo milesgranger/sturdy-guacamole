@@ -11,7 +11,7 @@ use tera::{Context, Tera};
 
 use crate::traits::SrcCode;
 use crate::{Generic, Generics};
-use crate::internal::{HasAnnotations, HasInnerAndOuterAnnotations};
+use crate::internal::{Annotations, InnerAndOuterAnnotations};
 
 /// Represents a function or method. Determined if any `Parameter` contains `self`
 #[derive(Default, Serialize, Clone)]
@@ -78,7 +78,7 @@ impl FunctionSignature {
     }
 }
 
-impl HasAnnotations for FunctionSignature {
+impl Annotations for FunctionSignature {
     fn annotations(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }
@@ -129,7 +129,7 @@ pub struct FunctionBody {
     annotations: Vec<String>,
 }
 
-impl HasAnnotations for FunctionBody {
+impl Annotations for FunctionBody {
     fn annotations(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }
@@ -189,7 +189,7 @@ impl Function {
     }
 }
 
-impl HasInnerAndOuterAnnotations for Function {
+impl InnerAndOuterAnnotations for Function {
     fn inner_annotations(&mut self) -> &mut Vec<String> {
         self.body.annotations()
     }
@@ -228,7 +228,7 @@ impl Parameter {
     }
 }
 
-impl HasAnnotations for Parameter {
+impl Annotations for Parameter {
     fn annotations(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }

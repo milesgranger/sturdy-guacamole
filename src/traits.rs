@@ -2,7 +2,7 @@
 //! Trait(s) specific to code generation objects within this crate.
 //!
 
-use crate::internal::{HasAnnotations, HasInnerAndOuterAnnotations};
+use crate::internal::{Annotations, InnerAndOuterAnnotations};
 
 /// Trait implemented for elements representing the ability to render as
 /// raw source code.
@@ -21,7 +21,7 @@ pub trait AnnotationExt {
     fn add_annotations(&mut self, annotations: impl IntoIterator<Item = impl ToString>) -> &mut Self;
 }
 
-impl <T: HasAnnotations> AnnotationExt for T {
+impl <T: Annotations> AnnotationExt for T {
     /// Add a single annotation.
     fn add_annotation(&mut self, annotation: impl ToString) -> &mut Self {
         self.annotations().push(annotation.to_string());
@@ -50,7 +50,7 @@ pub trait InnerAndOuterAnnotationExt {
     fn add_outer_annotations(&mut self, annotations: impl IntoIterator<Item = impl ToString>) -> &mut Self;
 }
 
-impl <T: HasInnerAndOuterAnnotations> InnerAndOuterAnnotationExt for T {
+impl <T: InnerAndOuterAnnotations> InnerAndOuterAnnotationExt for T {
     /// Add a single inner annotation.
     fn add_inner_annotation(&mut self, annotation: impl ToString) -> &mut Self {
         self.inner_annotations().push(annotation.to_string());

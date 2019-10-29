@@ -7,7 +7,7 @@ use serde::Serialize;
 use tera::{Context, Tera};
 
 use crate::*;
-use crate::internal::HasAnnotations;
+use crate::internal::Annotations;
 
 /// Create a field
 ///
@@ -59,7 +59,7 @@ impl Field {
     }
 }
 
-impl HasAnnotations for Field {
+impl Annotations for Field {
     fn annotations(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }
