@@ -30,3 +30,9 @@ pub trait Generics {
 pub trait TraitBounds {
     fn trait_bounds(&mut self) -> &mut Vec<String>;
 }
+
+/// Internal trait to get access to the container storing the documentation.
+/// Used for the generic implementation of `TraitBoundExt`
+pub trait Docs {
+    fn docs(&mut self) -> &mut Vec<String>;
+}

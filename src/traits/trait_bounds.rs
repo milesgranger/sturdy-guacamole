@@ -10,7 +10,7 @@ pub trait TraitBoundExt {
     fn add_trait_bound(&mut self, trait_bound: impl ToString) -> &mut Self;
 
     /// Add multiple trait bounds at once.
-    fn add_trait_bounds<'a>(
+    fn add_trait_bounds(
         &mut self,
         trait_bounds: impl IntoIterator<Item = impl ToString>,
     ) -> &mut Self;
@@ -24,7 +24,7 @@ impl<T: TraitBounds> TraitBoundExt for T {
     }
 
     /// Add multiple trait bounds at once.
-    fn add_trait_bounds<'a>(
+    fn add_trait_bounds(
         &mut self,
         trait_bounds: impl IntoIterator<Item = impl ToString>,
     ) -> &mut Self {

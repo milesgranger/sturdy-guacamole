@@ -78,5 +78,6 @@ pub fn norm_whitespace(s: &str) -> String {
     s.split('\n')
         .map(str::trim)
         .filter(|l| !l.is_empty())
-        .collect::<String>()
+        .collect::<Vec<&str>>()
+        .join("\n")
 }

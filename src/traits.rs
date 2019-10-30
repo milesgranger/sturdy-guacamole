@@ -3,11 +3,13 @@
 //!
 
 pub mod annotations;
+pub mod docs;
 pub mod fields;
 pub mod generics;
 pub mod trait_bounds;
 
 pub use annotations::*;
+pub use docs::*;
 pub use fields::*;
 pub use generics::*;
 pub use trait_bounds::*;

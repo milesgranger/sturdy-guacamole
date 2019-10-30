@@ -46,9 +46,17 @@ impl internal::Generics for Struct {
     }
 }
 
+impl internal::Docs for Struct {
+    fn docs(&mut self) -> &mut Vec<String> {
+        &mut self.docs
+    }
+}
+
 impl SrcCode for Struct {
     fn generate(&self) -> String {
         let template = r#"
+        {{ struct.docs | join(sep="
+        ") }}
         {% if struct.is_pub %}pub {% endif %}struct {{ struct.name }}{{ generics }} {
             {% for field in fields %}{{ field }}{% endfor %}
         }
