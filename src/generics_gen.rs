@@ -25,10 +25,11 @@ impl Generic {
             ..Self::default()
         }
     }
-    /// Set the trait bounds of this generic
-    pub fn add_trait_bounds<S: ToString>(&mut self, traits: Vec<S>) -> &mut Self {
-        self.traits.extend(traits.iter().map(|t| t.to_string()));
-        self
+}
+
+impl internal::TraitBounds for Generic {
+    fn trait_bounds(&mut self) -> &mut Vec<String> {
+        &mut self.traits
     }
 }
 

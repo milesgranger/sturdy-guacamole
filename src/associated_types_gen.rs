@@ -25,16 +25,17 @@ impl AssociatedTypeDeclaration {
             ..Self::default()
         }
     }
-    /// Set the trait bounds of this associated type
-    pub fn add_trait_bounds<S: ToString>(&mut self, traits: Vec<S>) -> &mut Self {
-        self.traits.extend(traits.iter().map(|t| t.to_string()));
-        self
-    }
 }
 
 impl internal::Annotations for AssociatedTypeDeclaration {
     fn annotations(&mut self) -> &mut Vec<String> {
         &mut self.annotations
+    }
+}
+
+impl internal::TraitBounds for AssociatedTypeDeclaration {
+    fn trait_bounds(&mut self) -> &mut Vec<String> {
+        &mut self.traits
     }
 }
 

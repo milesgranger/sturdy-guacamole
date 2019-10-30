@@ -24,3 +24,9 @@ pub trait Fields {
 pub trait Generics {
     fn generics(&mut self) -> &mut Vec<Generic>;
 }
+
+/// Internal trait to get access to the container storing the trait bounds.
+/// Used for the generic implementation of `TraitBoundExt`
+pub trait TraitBounds {
+    fn trait_bounds(&mut self) -> &mut Vec<String>;
+}
