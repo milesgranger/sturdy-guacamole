@@ -1,5 +1,7 @@
+pub mod utilities;
+use crate::utilities::Verify;
+
 use proffer::*;
-use syn::ItemFn;
 
 #[test]
 fn function_gen_basic() {
@@ -11,10 +13,9 @@ fn function_gen_basic() {
         }
     "#;
 
-    let src_code = function.generate();
+    let src_code = function.generate_and_verify();
     println!("{}", &src_code);
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
-    syn::parse_str::<ItemFn>(&src_code).unwrap();
 }
 
 #[test]
@@ -30,10 +31,9 @@ fn function_gen_parameters() {
         }
     "#;
 
-    let src_code = function.generate();
+    let src_code = function.generate_and_verify();
     println!("{}", &src_code);
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
-    syn::parse_str::<ItemFn>(&src_code).unwrap();
 }
 
 #[test]
@@ -62,10 +62,9 @@ fn function_with_generic() {
         }
     "#;
 
-    let src_code = function.generate();
+    let src_code = function.generate_and_verify();
     println!("{}", &src_code);
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
-    syn::parse_str::<ItemFn>(&src_code).unwrap();
 }
 
 #[test]
@@ -86,10 +85,9 @@ fn function_with_generic_no_bounds() {
         }
     "#;
 
-    let src_code = function.generate();
+    let src_code = function.generate_and_verify();
     println!("{}", &src_code);
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
-    syn::parse_str::<ItemFn>(&src_code).unwrap();
 }
 
 #[test]
@@ -105,10 +103,9 @@ fn function_with_async() {
         }
     "#;
 
-    let src_code = function.generate();
+    let src_code = function.generate_and_verify();
     println!("{}", &src_code);
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
-    syn::parse_str::<ItemFn>(&src_code).unwrap();
 }
 
 #[test]
@@ -133,10 +130,9 @@ fn function_gen_parameter_annotations() {
         }
     "#;
 
-    let src_code = function.generate();
+    let src_code = function.generate_and_verify();
     println!("{}", &src_code);
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
-    syn::parse_str::<ItemFn>(&src_code).unwrap();
 }
 
 #[test]
@@ -160,8 +156,7 @@ fn function_with_annotations() {
         }
     "#;
 
-    let src_code = function.generate();
+    let src_code = function.generate_and_verify();
     println!("{}", &src_code);
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
-    syn::parse_str::<ItemFn>(&src_code).unwrap();
 }

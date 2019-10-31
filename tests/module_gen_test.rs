@@ -1,5 +1,7 @@
+pub mod utilities;
+use crate::utilities::Verify;
+
 use proffer::*;
-use syn::ItemMod;
 
 #[test]
 fn test_module_basic() {
@@ -15,7 +17,7 @@ fn test_module_basic() {
         .add_use_statement("use super::*;")
         .add_enum(Enum::new("EnumThingy"))
         .to_owned();
-    let src_code = m.generate();
+    let src_code = m.generate_and_verify();
 
     let expected = r#"
         #[special_outer_annotation]
@@ -49,7 +51,6 @@ fn test_module_basic() {
     "#;
     println!("{}", &src_code);
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
-    syn::parse_str::<ItemMod>(&src_code).unwrap();
 }
 
 #[test]
@@ -70,7 +71,7 @@ fn test_module_submodule() {
                 .to_owned(),
         )
         .to_owned();
-    let src_code = m.generate();
+    let src_code = m.generate_and_verify();
 
     let expected = r#"
         pub mod upper_module
@@ -106,5 +107,4 @@ fn test_module_submodule() {
     "#;
     println!("{}", &src_code);
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
-    syn::parse_str::<ItemMod>(&src_code).unwrap();
 }

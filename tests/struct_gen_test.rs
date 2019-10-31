@@ -1,5 +1,7 @@
+pub mod utilities;
+use crate::utilities::Verify;
+
 use proffer::*;
-use syn::ItemStruct;
 
 #[test]
 fn basic_gen() {
@@ -25,12 +27,10 @@ fn basic_gen() {
             pub field1: String,
             field2: usize,
         }
-        "#
-    .to_owned();
-    let src_code = struct_.generate();
+        "#;
+    let src_code = struct_.generate_and_verify();
     println!("{}", &src_code);
-    assert_eq!(norm_whitespace(&src_code), norm_whitespace(&expected));
-    syn::parse_str::<ItemStruct>(&src_code).unwrap();
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
 
 #[test]
@@ -49,7 +49,7 @@ fn generic_gen() {
         )
         .add_fields(&[Field::new("field1", "S"), Field::new("field2", "T")])
         .to_owned();
-    let src_code = s.generate();
+    let src_code = s.generate_and_verify();
     println!("{}", &src_code);
     let expected = r#"
         pub struct Generic<T, S>
@@ -61,9 +61,7 @@ fn generic_gen() {
             field2: T,
         }
     "#;
-    let src_code = s.generate();
-    assert_eq!(norm_whitespace(&src_code), norm_whitespace(&expected));
-    syn::parse_str::<ItemStruct>(&src_code).unwrap();
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
 
 #[test]
@@ -80,30 +78,8 @@ fn gen_with_doc() {
         pub struct Basic
         {
         }
-        "#
-    .to_owned();
-    let src_code = struct_.generate();
+        "#;
+    let src_code = struct_.generate_and_verify();
     println!("{}", &src_code);
-    assert_eq!(norm_whitespace(&src_code), norm_whitespace(&expected));
-    syn::parse_str::<ItemStruct>(&src_code).unwrap();
-}
-
-#[test]
-fn gen_with_doc() {
-    let struct_ = Struct::new("Basic")
-        .set_is_pub(true)
-        .add_doc("/// Some example documentation")
-        .add_docs(vec!["/// Another line", "/// and another"])
-        .to_owned();
-    let expected = r#"
-        /// Some example documentation
-        /// Another line
-        /// and another
-        pub struct Basic {
-         }
-        "#
-    .to_owned();
-    let src_code = struct_.generate();
-    println!("{}", &src_code);
-    assert_eq!(norm_whitespace(&src_code), norm_whitespace(&expected));
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }

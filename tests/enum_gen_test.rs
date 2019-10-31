@@ -1,5 +1,7 @@
+pub mod utilities;
+use crate::utilities::Verify;
+
 use proffer::*;
-use syn::ItemEnum;
 
 #[test]
 fn gen_enum_basic() {
@@ -9,7 +11,7 @@ fn gen_enum_basic() {
         .set_is_pub(true)
         .to_owned();
 
-    let src_code = e.generate();
+    let src_code = e.generate_and_verify();
     println!("{}", &src_code);
 
     let expected = r#"
@@ -21,7 +23,6 @@ fn gen_enum_basic() {
     "#;
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
-    syn::parse_str::<ItemEnum>(&src_code).unwrap();
 }
 
 #[test]
@@ -32,7 +33,7 @@ fn gen_enum_with_generic() {
         .add_generic(Generic::new("T"))
         .to_owned();
 
-    let src_code = e.generate();
+    let src_code = e.generate_and_verify();
     println!("{}", &src_code);
 
     let expected = r#"
@@ -45,5 +46,4 @@ fn gen_enum_with_generic() {
         }
     "#;
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
-    syn::parse_str::<ItemEnum>(&src_code).unwrap();
 }
