@@ -11,7 +11,7 @@ use tera::{Context, Tera};
 
 use crate::internal::Annotations;
 use crate::traits::SrcCode;
-use crate::{internal, Generic, Generics};
+use crate::{internal, Annotation, Generic, Generics};
 
 /// Represents a function or method. Determined if any `Parameter` contains `self`
 #[derive(Default, Serialize, Clone)]
@@ -29,7 +29,7 @@ pub struct FunctionSignature {
     parameters: Vec<Parameter>,
     generics: Generics,
     return_ty: Option<String>,
-    annotations: Vec<String>,
+    annotations: Vec<Annotation>,
 }
 
 impl FunctionSignature {
@@ -73,7 +73,7 @@ impl FunctionSignature {
 }
 
 impl internal::Annotations for FunctionSignature {
-    fn annotations(&mut self) -> &mut Vec<String> {
+    fn annotations(&mut self) -> &mut Vec<Annotation> {
         &mut self.annotations
     }
 }
@@ -87,7 +87,7 @@ impl internal::Generics for FunctionSignature {
 impl SrcCode for FunctionSignature {
     fn generate(&self) -> String {
         let template = r#"
-        {{ self.annotations | join(sep="
+        {{ annotations | join(sep="
         ") }}
         {% if self.is_pub %}pub {% endif %}{% if self.is_async %}async {% endif %}fn {{ self.name }}{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %}({{ parameters | join(sep=", ") }}) -> {{ return_ty }}{% if has_generics %}
             where
@@ -118,6 +118,14 @@ impl SrcCode for FunctionSignature {
                 .map(|param| param.generate())
                 .collect::<Vec<String>>(),
         );
+        context.insert(
+            "annotations",
+            &self
+                .annotations
+                .iter()
+                .map(|a| a.generate())
+                .collect::<Vec<String>>(),
+        );
         Tera::one_off(template, &context, false).unwrap()
     }
 }
@@ -126,11 +134,11 @@ impl SrcCode for FunctionSignature {
 #[derive(Default, Serialize, Clone)]
 pub struct FunctionBody {
     body: String,
-    annotations: Vec<String>,
+    annotations: Vec<Annotation>,
 }
 
 impl internal::Annotations for FunctionBody {
-    fn annotations(&mut self) -> &mut Vec<String> {
+    fn annotations(&mut self) -> &mut Vec<Annotation> {
         &mut self.annotations
     }
 }
@@ -138,12 +146,20 @@ impl internal::Annotations for FunctionBody {
 impl SrcCode for FunctionBody {
     fn generate(&self) -> String {
         let template = r#"
-            {{ self.annotations | join(sep="
+            {{ annotations | join(sep="
             ") }}
             {{ self.body }}
         "#;
         let mut ctx = Context::new();
         ctx.insert("self", &self);
+        ctx.insert(
+            "annotations",
+            &self
+                .annotations
+                .iter()
+                .map(|a| a.generate())
+                .collect::<Vec<String>>(),
+        );
         Tera::one_off(template, &ctx, false).unwrap()
     }
 }
@@ -185,11 +201,11 @@ impl Function {
 }
 
 impl internal::InnerAndOuterAnnotations for Function {
-    fn inner_annotations(&mut self) -> &mut Vec<String> {
+    fn inner_annotations(&mut self) -> &mut Vec<Annotation> {
         self.body.annotations()
     }
 
-    fn outer_annotations(&mut self) -> &mut Vec<String> {
+    fn outer_annotations(&mut self) -> &mut Vec<Annotation> {
         self.signature.annotations()
     }
 }
@@ -205,7 +221,7 @@ impl internal::Generics for Function {
 pub struct Parameter {
     name: String,
     ty: String,
-    annotations: Vec<String>,
+    annotations: Vec<Annotation>,
 }
 impl Parameter {
     /// Create a new parameter
@@ -230,16 +246,24 @@ impl Parameter {
 }
 
 impl internal::Annotations for Parameter {
-    fn annotations(&mut self) -> &mut Vec<String> {
+    fn annotations(&mut self) -> &mut Vec<Annotation> {
         &mut self.annotations
     }
 }
 
 impl SrcCode for Parameter {
     fn generate(&self) -> String {
-        let template = "{% for annotation in self.annotations %}{{ annotation }} {% endfor %}{{ self.name }}: {{ self.ty }}";
+        let template = "{% for annotation in annotations %}{{ annotation }} {% endfor %}{{ self.name }}: {{ self.ty }}";
         let mut ctx = Context::new();
         ctx.insert("self", &self);
+        ctx.insert(
+            "annotations",
+            &self
+                .annotations
+                .iter()
+                .map(|a| a.generate())
+                .collect::<Vec<String>>(),
+        );
         Tera::one_off(template, &ctx, false).unwrap()
     }
 }

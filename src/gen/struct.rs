@@ -15,7 +15,7 @@ pub struct Struct {
     name: String,
     fields: Vec<Field>,
     generics: Generics,
-    docs: Vec<String>,
+    docs: Vec<Annotation>,
 }
 
 impl Struct {
@@ -47,7 +47,7 @@ impl internal::Generics for Struct {
 }
 
 impl internal::Docs for Struct {
-    fn docs(&mut self) -> &mut Vec<String> {
+    fn docs(&mut self) -> &mut Vec<Annotation> {
         &mut self.docs
     }
 }
@@ -55,7 +55,7 @@ impl internal::Docs for Struct {
 impl SrcCode for Struct {
     fn generate(&self) -> String {
         let template = r#"
-        {{ struct.docs | join(sep="
+        {{ docs | join(sep="
         ") }}
         {% if struct.is_pub %}pub {% endif %}struct {{ struct.name }}{{ generics }}
         {
@@ -64,6 +64,14 @@ impl SrcCode for Struct {
         "#;
         let mut context = Context::new();
         context.insert("struct", &self);
+        context.insert(
+            "docs",
+            &self
+                .docs
+                .iter()
+                .map(|v| v.generate())
+                .collect::<Vec<String>>(),
+        );
 
         let fields = self
             .fields

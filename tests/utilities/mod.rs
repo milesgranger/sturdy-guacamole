@@ -11,6 +11,7 @@ pub trait Verify: SrcCode {
 
     fn generate_and_verify(&self) -> String {
         let src_code = self.generate();
+        println!("{}", &src_code);
         Self::verify_generated(&src_code);
         src_code
     }

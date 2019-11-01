@@ -6,15 +6,15 @@
 use serde::{Deserialize, Serialize};
 use tera::{Context, Tera};
 
-use crate::internal;
 use crate::traits::SrcCode;
+use crate::{internal, Annotation};
 
 /// Represent the declaration of a associated type in a trait
 #[derive(Serialize, Deserialize, Default, Clone)]
 pub struct AssociatedTypeDeclaration {
     pub(crate) name: String,
     pub(crate) traits: Vec<String>,
-    annotations: Vec<String>,
+    annotations: Vec<Annotation>,
 }
 
 impl AssociatedTypeDeclaration {
@@ -28,7 +28,7 @@ impl AssociatedTypeDeclaration {
 }
 
 impl internal::Annotations for AssociatedTypeDeclaration {
-    fn annotations(&mut self) -> &mut Vec<String> {
+    fn annotations(&mut self) -> &mut Vec<Annotation> {
         &mut self.annotations
     }
 }
@@ -41,14 +41,22 @@ impl internal::TraitBounds for AssociatedTypeDeclaration {
 
 impl SrcCode for AssociatedTypeDeclaration {
     fn generate(&self) -> String {
-        let template = r#"{% if has_annotations %}{{ self.annotations | join(sep="
+        let template = r#"
+        {{ annotations | join(sep="
         ") }}
-        {% endif %}type {{ self.name }}{% if has_traits %}: {{ self.traits | join(sep=" + ") }}{% endif %};
+        type {{ self.name }}{% if has_traits %}: {{ self.traits | join(sep=" + ") }}{% endif %};
         "#;
         let mut context = Context::new();
         context.insert("self", &self);
         context.insert("has_traits", &!self.traits.is_empty());
-        context.insert("has_annotations", &!self.annotations.is_empty());
+        context.insert(
+            "annotations",
+            &self
+                .annotations
+                .iter()
+                .map(|a| a.generate())
+                .collect::<Vec<String>>(),
+        );
         Tera::one_off(template, &context, false).unwrap()
     }
 }
@@ -58,7 +66,7 @@ impl SrcCode for AssociatedTypeDeclaration {
 pub struct AssociatedTypeDefinition {
     pub(crate) name: String,
     pub(crate) implementer: String,
-    annotations: Vec<String>,
+    annotations: Vec<Annotation>,
 }
 
 impl AssociatedTypeDefinition {
@@ -73,20 +81,28 @@ impl AssociatedTypeDefinition {
 }
 
 impl internal::Annotations for AssociatedTypeDefinition {
-    fn annotations(&mut self) -> &mut Vec<String> {
+    fn annotations(&mut self) -> &mut Vec<Annotation> {
         &mut self.annotations
     }
 }
 
 impl SrcCode for AssociatedTypeDefinition {
     fn generate(&self) -> String {
-        let template = r#"{% if has_annotations %}{{ self.annotations | join(sep="
+        let template = r#"
+        {{ annotations | join(sep="
         ") }}
-        {% endif %}type {{ self.name }} = {{ self.implementer }};
+        type {{ self.name }} = {{ self.implementer }};
         "#;
         let mut context = Context::new();
         context.insert("self", &self);
-        context.insert("has_annotations", &!self.annotations.is_empty());
+        context.insert(
+            "annotations",
+            &self
+                .annotations
+                .iter()
+                .map(|v| v.generate())
+                .collect::<Vec<String>>(),
+        );
         Tera::one_off(template, &context, false).unwrap()
     }
 }

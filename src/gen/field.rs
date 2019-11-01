@@ -26,8 +26,8 @@ pub struct Field {
     name: String,
     is_pub: bool,
     ty: String,
-    annotations: Vec<String>,
-    docs: Vec<String>,
+    annotations: Vec<Annotation>,
+    docs: Vec<Annotation>,
 }
 
 impl Field {
@@ -48,13 +48,13 @@ impl Field {
 }
 
 impl internal::Annotations for Field {
-    fn annotations(&mut self) -> &mut Vec<String> {
+    fn annotations(&mut self) -> &mut Vec<Annotation> {
         &mut self.annotations
     }
 }
 
 impl internal::Docs for Field {
-    fn docs(&mut self) -> &mut Vec<String> {
+    fn docs(&mut self) -> &mut Vec<Annotation> {
         &mut self.docs
     }
 }
@@ -62,13 +62,29 @@ impl internal::Docs for Field {
 impl SrcCode for Field {
     fn generate(&self) -> String {
         let template = r#"
-            {{ field.docs | join(sep="
+            {{ docs | join(sep="
             ") }}
-            {% for annotation in field.annotations %}{{ annotation }}{% endfor %}
+            {% for annotation in annotations %}{{ annotation }}{% endfor %}
             {% if field.is_pub %}pub{% endif %} {{ field.name }}: {{ field.ty }},
         "#;
         let mut context = Context::new();
         context.insert("field", &self);
+        context.insert(
+            "docs",
+            &self
+                .docs
+                .iter()
+                .map(|d| d.generate())
+                .collect::<Vec<String>>(),
+        );
+        context.insert(
+            "annotations",
+            &self
+                .annotations
+                .iter()
+                .map(|a| a.generate())
+                .collect::<Vec<String>>(),
+        );
         Tera::one_off(template, &context, false).unwrap()
     }
 }

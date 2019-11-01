@@ -65,10 +65,10 @@ pub struct Module {
     structs: Vec<Struct>,
     impls: Vec<Impl>,
     enums: Vec<Enum>,
-    docs: Vec<String>,
+    docs: Vec<Annotation>,
     sub_modules: Vec<Module>,
-    inner_annotations: Vec<String>,
-    outer_annotations: Vec<String>,
+    inner_annotations: Vec<Annotation>,
+    outer_annotations: Vec<Annotation>,
     use_stmts: Vec<String>,
 }
 
@@ -123,17 +123,17 @@ impl Module {
 }
 
 impl internal::InnerAndOuterAnnotations for Module {
-    fn inner_annotations(&mut self) -> &mut Vec<String> {
+    fn inner_annotations(&mut self) -> &mut Vec<Annotation> {
         &mut self.inner_annotations
     }
 
-    fn outer_annotations(&mut self) -> &mut Vec<String> {
+    fn outer_annotations(&mut self) -> &mut Vec<Annotation> {
         &mut self.outer_annotations
     }
 }
 
 impl internal::Docs for Module {
-    fn docs(&mut self) -> &mut Vec<String> {
+    fn docs(&mut self) -> &mut Vec<Annotation> {
         &mut self.docs
     }
 }
@@ -141,11 +141,13 @@ impl internal::Docs for Module {
 impl SrcCode for Module {
     fn generate(&self) -> String {
         let template = r#"
-        {% for annotation in self.outer_annotations %}{{ annotation }}{% endfor %}
+        {{ outer_annotations | join(sep="
+        ") }}
         {% if self.is_pub %}pub {% endif %}mod {{ self.name }}
         {
-            {% for annotation in self.inner_annotations %}{{ annotation }}{% endfor %}
-            {% for doc in self.docs %}{{ doc }}{% endfor %}
+            {{ inner_annotations | join(sep="
+            ") }}
+            {% for doc in docs %}{{ doc }}{% endfor %}
 
             {% for stmt in self.use_stmts %}{{ stmt }}{% endfor %}
             {% for obj in objs %}{{ obj }}{% endfor %}
@@ -155,6 +157,30 @@ impl SrcCode for Module {
 
         let mut ctx = Context::new();
         ctx.insert("self", &self);
+        ctx.insert(
+            "docs",
+            &self
+                .docs
+                .iter()
+                .map(|d| d.generate())
+                .collect::<Vec<String>>(),
+        );
+        ctx.insert(
+            "outer_annotations",
+            &self
+                .outer_annotations
+                .iter()
+                .map(|a| a.generate())
+                .collect::<Vec<String>>(),
+        );
+        ctx.insert(
+            "inner_annotations",
+            &self
+                .inner_annotations
+                .iter()
+                .map(|a| a.generate())
+                .collect::<Vec<String>>(),
+        );
 
         let mut objs: Vec<String> = vec![];
         self.traits.iter().for_each(|v| objs.push(v.generate()));
