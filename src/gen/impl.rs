@@ -89,8 +89,8 @@ impl SrcCode for Impl {
                 .map(|g| g.generic.clone())
                 .collect::<Vec<String>>(),
         );
-        context.insert("functions", &self.functions.as_src_vec());
-        context.insert("associated_types", &self.associated_types.as_src_vec());
+        context.insert("functions", &self.functions.to_src_vec());
+        context.insert("associated_types", &self.associated_types.to_src_vec());
         Tera::one_off(template, &context, false).unwrap()
     }
 }

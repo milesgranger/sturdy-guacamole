@@ -110,7 +110,7 @@ impl SrcCode for FunctionSignature {
                 .map(|g| g.generic.clone())
                 .collect::<Vec<String>>(),
         );
-        context.insert("parameters", &self.parameters.as_src_vec());
+        context.insert("parameters", &self.parameters.to_src_vec());
         Tera::one_off(template, &context, false).unwrap()
     }
 }

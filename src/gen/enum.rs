@@ -110,7 +110,7 @@ impl SrcCode for Enum {
         let mut ctx = Context::new();
         ctx.insert("self", &self);
         ctx.insert("generics", &self.generics.generate());
-        ctx.insert("variants", &self.variants.as_src_vec());
+        ctx.insert("variants", &self.variants.to_src_vec());
         Tera::one_off(template, &ctx, false).unwrap()
     }
 }

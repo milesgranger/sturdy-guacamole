@@ -84,8 +84,8 @@ impl SrcCode for Trait {
         "#;
         let mut context = Context::new();
         context.insert("self", &self);
-        context.insert("signatures", &self.signatures.as_src_vec());
-        context.insert("associated_types", &self.associated_types.as_src_vec());
+        context.insert("signatures", &self.signatures.to_src_vec());
+        context.insert("associated_types", &self.associated_types.to_src_vec());
         context.insert("has_generics", &!self.generics.is_empty());
         context.insert("generic_bounds", &self.generics.generate());
         Tera::one_off(template, &context, false).unwrap()

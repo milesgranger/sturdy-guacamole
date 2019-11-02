@@ -25,11 +25,11 @@ pub trait SrcCode {
 /// Trait to help collecting `Vec<impl SrcCode>` into `Vec<String>` via `.generate()`
 pub trait SrcCodeVec {
     /// Convert the current `Vec<impl SrcCode>` into `Vec<String>`
-    fn as_src_vec(&self) -> Vec<String>;
+    fn to_src_vec(&self) -> Vec<String>;
 }
 
 impl<T: SrcCode> SrcCodeVec for Vec<T> {
-    fn as_src_vec(&self) -> Vec<String> {
+    fn to_src_vec(&self) -> Vec<String> {
         self.iter().map(SrcCode::generate).collect()
     }
 }
