@@ -30,6 +30,6 @@ pub trait SrcCodeVec {
 
 impl<T: SrcCode> SrcCodeVec for Vec<T> {
     fn as_src_vec(&self) -> Vec<String> {
-        self.iter().map(|v| v.generate()).collect()
+        self.iter().map(SrcCode::generate).collect()
     }
 }
