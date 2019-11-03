@@ -11,7 +11,7 @@ use tera::{Context, Tera};
 
 use crate::internal::Annotations;
 use crate::traits::SrcCode;
-use crate::{internal, Annotation, Generic, Generics};
+use crate::{internal, Annotation, Generic, Generics, SrcCodeVec};
 
 /// Represents a function or method. Determined if any `Parameter` contains `self`
 #[derive(Default, Serialize, Clone)]
@@ -110,22 +110,8 @@ impl SrcCode for FunctionSignature {
                 .map(|g| g.generic.clone())
                 .collect::<Vec<String>>(),
         );
-        context.insert(
-            "parameters",
-            &self
-                .parameters
-                .iter()
-                .map(|param| param.generate())
-                .collect::<Vec<String>>(),
-        );
-        context.insert(
-            "annotations",
-            &self
-                .annotations
-                .iter()
-                .map(|a| a.generate())
-                .collect::<Vec<String>>(),
-        );
+        context.insert("annotations", &self.annotations.to_src_vec());
+        context.insert("parameters", &self.parameters.to_src_vec());
         Tera::one_off(template, &context, false).unwrap()
     }
 }
