@@ -69,22 +69,8 @@ impl SrcCode for Field {
         "#;
         let mut context = Context::new();
         context.insert("field", &self);
-        context.insert(
-            "docs",
-            &self
-                .docs
-                .iter()
-                .map(|d| d.generate())
-                .collect::<Vec<String>>(),
-        );
-        context.insert(
-            "annotations",
-            &self
-                .annotations
-                .iter()
-                .map(|a| a.generate())
-                .collect::<Vec<String>>(),
-        );
+        context.insert("docs", &self.docs.to_src_vec());
+        context.insert("annotations", &self.annotations.to_src_vec());
         Tera::one_off(template, &context, false).unwrap()
     }
 }

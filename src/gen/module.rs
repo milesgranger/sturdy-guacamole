@@ -157,30 +157,9 @@ impl SrcCode for Module {
 
         let mut ctx = Context::new();
         ctx.insert("self", &self);
-        ctx.insert(
-            "docs",
-            &self
-                .docs
-                .iter()
-                .map(|d| d.generate())
-                .collect::<Vec<String>>(),
-        );
-        ctx.insert(
-            "outer_annotations",
-            &self
-                .outer_annotations
-                .iter()
-                .map(|a| a.generate())
-                .collect::<Vec<String>>(),
-        );
-        ctx.insert(
-            "inner_annotations",
-            &self
-                .inner_annotations
-                .iter()
-                .map(|a| a.generate())
-                .collect::<Vec<String>>(),
-        );
+        ctx.insert("docs", &self.docs.to_src_vec());
+        ctx.insert("outer_annotations", &self.outer_annotations.to_src_vec());
+        ctx.insert("inner_annotations", &self.inner_annotations.to_src_vec());
 
         let mut objs: Vec<String> = vec![];
         self.traits.iter().for_each(|v| objs.push(v.generate()));

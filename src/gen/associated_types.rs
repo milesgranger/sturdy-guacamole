@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use tera::{Context, Tera};
 
 use crate::traits::SrcCode;
-use crate::{internal, Annotation};
+use crate::{internal, Annotation, SrcCodeVec};
 
 /// Represent the declaration of a associated type in a trait
 #[derive(Serialize, Deserialize, Default, Clone)]
@@ -49,14 +49,7 @@ impl SrcCode for AssociatedTypeDeclaration {
         let mut context = Context::new();
         context.insert("self", &self);
         context.insert("has_traits", &!self.traits.is_empty());
-        context.insert(
-            "annotations",
-            &self
-                .annotations
-                .iter()
-                .map(|a| a.generate())
-                .collect::<Vec<String>>(),
-        );
+        context.insert("annotations", &self.annotations.to_src_vec());
         Tera::one_off(template, &context, false).unwrap()
     }
 }
@@ -95,14 +88,7 @@ impl SrcCode for AssociatedTypeDefinition {
         "#;
         let mut context = Context::new();
         context.insert("self", &self);
-        context.insert(
-            "annotations",
-            &self
-                .annotations
-                .iter()
-                .map(|v| v.generate())
-                .collect::<Vec<String>>(),
-        );
+        context.insert("annotations", &self.annotations.to_src_vec());
         Tera::one_off(template, &context, false).unwrap()
     }
 }

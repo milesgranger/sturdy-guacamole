@@ -242,14 +242,7 @@ impl SrcCode for Parameter {
         let template = "{% for annotation in annotations %}{{ annotation }} {% endfor %}{{ self.name }}: {{ self.ty }}";
         let mut ctx = Context::new();
         ctx.insert("self", &self);
-        ctx.insert(
-            "annotations",
-            &self
-                .annotations
-                .iter()
-                .map(|a| a.generate())
-                .collect::<Vec<String>>(),
-        );
+        ctx.insert("annotations", &self.annotations.to_src_vec());
         Tera::one_off(template, &ctx, false).unwrap()
     }
 }
