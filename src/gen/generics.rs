@@ -33,8 +33,11 @@ impl Generic {
 }
 
 impl internal::TraitBounds for Generic {
-    fn trait_bounds(&mut self) -> &mut Vec<String> {
+    fn trait_bounds_mut(&mut self) -> &mut Vec<String> {
         &mut self.traits
+    }
+    fn trait_bounds(&self) -> &[String] {
+        self.traits.as_slice()
     }
 }
 
