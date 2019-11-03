@@ -16,7 +16,8 @@ pub trait InnerAndOuterAnnotations {
 /// Internal trait to get access to the container storing the fields.
 /// Used for the generic implementation of `FieldExt`
 pub trait Fields {
-    fn fields(&mut self) -> &mut Vec<Field>;
+    fn fields_mut(&mut self) -> &mut Vec<Field>;
+    fn fields(&self) -> &[Field];
 }
 
 /// Internal trait to get access to the container storing the generics.

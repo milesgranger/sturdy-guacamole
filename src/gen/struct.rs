@@ -35,8 +35,11 @@ impl Struct {
 }
 
 impl internal::Fields for Struct {
-    fn fields(&mut self) -> &mut Vec<Field> {
+    fn fields_mut(&mut self) -> &mut Vec<Field> {
         &mut self.fields
+    }
+    fn fields(&self) -> &[Field] {
+        self.fields.as_slice()
     }
 }
 
