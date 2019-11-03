@@ -13,22 +13,22 @@ use crate::traits::SrcCode;
 /// Represent a single trait bound
 #[derive(Serialize, Deserialize, Default, Clone)]
 pub struct Generic {
-    generic: String,
+    name: String,
     traits: Vec<String>,
 }
 
 impl Generic {
     /// Create a new `Generic`
-    pub fn new(id: impl ToString) -> Self {
+    pub fn new(name: impl ToString) -> Self {
         Self {
-            generic: id.to_string(),
+            name: name.to_string(),
             ..Self::default()
         }
     }
 
     /// Get the name of the generic
-    pub fn generic(&self) -> &str {
-        self.generic.as_str()
+    pub fn name(&self) -> &str {
+        self.name.as_str()
     }
 }
 
@@ -81,8 +81,8 @@ impl SrcCode for Generics {
                 &self
                     .generics
                     .iter()
-                    .map(|g| g.generic.clone())
-                    .collect::<Vec<String>>(),
+                    .map(|g| g.name())
+                    .collect::<Vec<&str>>(),
             );
             context.insert("generics", &self.generics);
             Tera::one_off(template, &context, false).unwrap()

@@ -107,7 +107,7 @@ impl SrcCode for FunctionSignature {
                 .generics
                 .generics
                 .iter()
-                .map(|g| g.generic())
+                .map(|g| g.name())
                 .collect::<Vec<&str>>(),
         );
         context.insert("parameters", &self.parameters.to_src_vec());
