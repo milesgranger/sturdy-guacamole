@@ -19,7 +19,7 @@ pub trait AnnotationExt {
 impl<T: Annotations> AnnotationExt for T {
     /// Add a single annotation.
     fn add_annotation(&mut self, annotation: impl ToString) -> &mut Self {
-        self.annotations().push(annotation.to_string());
+        self.annotations_mut().push(annotation.to_string());
         self
     }
 
@@ -28,7 +28,7 @@ impl<T: Annotations> AnnotationExt for T {
         &mut self,
         annotations: impl IntoIterator<Item = impl ToString>,
     ) -> &mut Self {
-        self.annotations()
+        self.annotations_mut()
             .extend(annotations.into_iter().map(|a| a.to_string()));
         self
     }

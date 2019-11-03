@@ -48,8 +48,11 @@ impl Field {
 }
 
 impl internal::Annotations for Field {
-    fn annotations(&mut self) -> &mut Vec<String> {
+    fn annotations_mut(&mut self) -> &mut Vec<String> {
         &mut self.annotations
+    }
+    fn annotations(&self) -> &[String] {
+        self.annotations.as_slice()
     }
 }
 
