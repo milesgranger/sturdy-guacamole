@@ -5,9 +5,7 @@
 use serde::Serialize;
 
 use crate::traits::SrcCode;
-use crate::{
-    internal, AssociatedTypeDeclaration, FunctionSignature, Generic, Generics, SrcCodeVec,
-};
+use crate::{internal, AssociatedTypeDeclaration, FunctionSignature, Generic, SrcCodeVec};
 use tera::{Context, Tera};
 
 /// Represents a `trait` block.
@@ -34,7 +32,7 @@ use tera::{Context, Tera};
 pub struct Trait {
     name: String,
     is_pub: bool,
-    generics: Generics,
+    generics: Vec<Generic>,
     signatures: Vec<FunctionSignature>,
     associated_types: Vec<AssociatedTypeDeclaration>,
 }
@@ -73,8 +71,11 @@ impl Trait {
 }
 
 impl internal::Generics for Trait {
-    fn generics(&mut self) -> &mut Vec<Generic> {
-        self.generics.generics()
+    fn generics_mut(&mut self) -> &mut Vec<Generic> {
+        &mut self.generics
+    }
+    fn generics(&self) -> &[Generic] {
+        self.generics.as_slice()
     }
 }
 
