@@ -12,8 +12,8 @@ use crate::{internal, Annotation, SrcCodeVec};
 /// Represent the declaration of a associated type in a trait
 #[derive(Serialize, Deserialize, Default, Clone)]
 pub struct AssociatedTypeDeclaration {
-    pub(crate) name: String,
-    pub(crate) traits: Vec<String>,
+    name: String,
+    traits: Vec<String>,
     annotations: Vec<Annotation>,
 }
 
@@ -57,8 +57,8 @@ impl SrcCode for AssociatedTypeDeclaration {
 /// Represent the definition of a associated type in a trait implementation
 #[derive(Serialize, Deserialize, Default, Clone)]
 pub struct AssociatedTypeDefinition {
-    pub(crate) name: String,
-    pub(crate) implementer: String,
+    name: String,
+    implementer: String,
     annotations: Vec<Annotation>,
 }
 
