@@ -37,5 +37,6 @@ pub trait TraitBounds {
 /// Internal trait to get access to the container storing the documentation.
 /// Used for the generic implementation of `TraitBoundExt`
 pub trait Docs {
-    fn docs(&mut self) -> &mut Vec<String>;
+    fn docs_mut(&mut self) -> &mut Vec<String>;
+    fn docs(&self) -> &[String];
 }

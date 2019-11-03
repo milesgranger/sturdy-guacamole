@@ -53,8 +53,11 @@ impl internal::Generics for Struct {
 }
 
 impl internal::Docs for Struct {
-    fn docs(&mut self) -> &mut Vec<String> {
+    fn docs_mut(&mut self) -> &mut Vec<String> {
         &mut self.docs
+    }
+    fn docs(&self) -> &[String] {
+        self.docs.as_slice()
     }
 }
 
