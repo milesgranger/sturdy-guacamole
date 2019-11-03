@@ -32,7 +32,7 @@ use tera::{Context, Tera};
 /// ```
 #[derive(Serialize, Default, Clone)]
 pub struct Trait {
-    pub(crate) name: String,
+    name: String,
     is_pub: bool,
     generics: Generics,
     signatures: Vec<FunctionSignature>,
@@ -46,6 +46,11 @@ impl Trait {
             name: name.to_string(),
             ..Self::default()
         }
+    }
+
+    /// Get the trait name
+    pub fn name(&self) -> &str {
+        self.name.as_str()
     }
 
     /// Add a new signature requirement to this trait.

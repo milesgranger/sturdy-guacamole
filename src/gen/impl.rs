@@ -73,10 +73,7 @@ impl SrcCode for Impl {
         context.insert("has_trait", &self.impl_trait.is_some());
         context.insert(
             "trait_name",
-            &self
-                .impl_trait
-                .as_ref()
-                .map_or_else(|| "".to_string(), |t| t.name.clone()),
+            &self.impl_trait.as_ref().map_or_else(|| "", |t| t.name()),
         );
         context.insert("has_generics", &!self.generics.is_empty());
         context.insert("generics", &self.generics.generics);
