@@ -10,8 +10,10 @@ pub trait Annotations {
 /// Internal trait to get access to the container storing the inner and outer annotations.
 /// Used for the generic implementation of `InnerAndOuterAnnotationExt`
 pub trait InnerAndOuterAnnotations {
-    fn inner_annotations(&mut self) -> &mut Vec<String>;
-    fn outer_annotations(&mut self) -> &mut Vec<String>;
+    fn inner_annotations_mut(&mut self) -> &mut Vec<String>;
+    fn inner_annotations(&self) -> &[String];
+    fn outer_annotations_mut(&mut self) -> &mut Vec<String>;
+    fn outer_annotations(&self) -> &[String];
 }
 
 /// Internal trait to get access to the container storing the fields.

@@ -186,12 +186,17 @@ impl Function {
 }
 
 impl internal::InnerAndOuterAnnotations for Function {
-    fn inner_annotations(&mut self) -> &mut Vec<String> {
+    fn inner_annotations_mut(&mut self) -> &mut Vec<String> {
         self.body.annotations_mut()
     }
-
-    fn outer_annotations(&mut self) -> &mut Vec<String> {
+    fn inner_annotations(&self) -> &[String] {
+        self.body.annotations()
+    }
+    fn outer_annotations_mut(&mut self) -> &mut Vec<String> {
         self.signature.annotations_mut()
+    }
+    fn outer_annotations(&self) -> &[String] {
+        self.signature.annotations()
     }
 }
 
