@@ -13,7 +13,7 @@ use crate::traits::SrcCode;
 /// Represent a single trait bound
 #[derive(Serialize, Deserialize, Default, Clone)]
 pub struct Generic {
-    pub(crate) generic: String,
+    generic: String,
     traits: Vec<String>,
 }
 
@@ -24,6 +24,11 @@ impl Generic {
             generic: id.to_string(),
             ..Self::default()
         }
+    }
+
+    /// Get the name of the generic
+    pub fn generic(&self) -> &str {
+        self.generic.as_str()
     }
 }
 

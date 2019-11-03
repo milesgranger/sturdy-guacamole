@@ -83,8 +83,8 @@ impl SrcCode for Impl {
                 .generics
                 .generics
                 .iter()
-                .map(|g| g.generic.clone())
-                .collect::<Vec<String>>(),
+                .map(|g| g.generic())
+                .collect::<Vec<&str>>(),
         );
         context.insert("functions", &self.functions.to_src_vec());
         context.insert("associated_types", &self.associated_types.to_src_vec());
