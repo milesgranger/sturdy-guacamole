@@ -33,7 +33,7 @@ use tera::{Context, Tera};
 #[derive(Serialize, Default, Clone)]
 pub struct Trait {
     pub(crate) name: String,
-    pub(crate) is_pub: bool,
+    is_pub: bool,
     generics: Generics,
     signatures: Vec<FunctionSignature>,
     associated_types: Vec<AssociatedTypeDeclaration>,

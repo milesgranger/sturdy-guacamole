@@ -14,7 +14,7 @@ use crate::traits::SrcCode;
 #[derive(Serialize, Deserialize, Default, Clone)]
 pub struct Generic {
     pub(crate) generic: String,
-    pub(crate) traits: Vec<String>,
+    traits: Vec<String>,
 }
 
 impl Generic {
