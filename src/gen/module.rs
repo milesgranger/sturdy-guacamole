@@ -126,24 +126,14 @@ impl internal::InnerAndOuterAnnotations for Module {
     fn inner_annotations_mut(&mut self) -> &mut Vec<String> {
         &mut self.inner_annotations
     }
-    fn inner_annotations(&self) -> &[String] {
-        self.inner_annotations.as_slice()
-    }
-
     fn outer_annotations_mut(&mut self) -> &mut Vec<String> {
         &mut self.outer_annotations
-    }
-    fn outer_annotations(&self) -> &[String] {
-        self.outer_annotations.as_slice()
     }
 }
 
 impl internal::Docs for Module {
     fn docs_mut(&mut self) -> &mut Vec<String> {
         &mut self.docs
-    }
-    fn docs(&self) -> &[String] {
-        self.docs.as_slice()
     }
 }
 

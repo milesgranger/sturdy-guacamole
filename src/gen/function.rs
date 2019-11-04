@@ -76,9 +76,6 @@ impl internal::Annotations for FunctionSignature {
     fn annotations_mut(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }
-    fn annotations(&self) -> &[String] {
-        self.annotations.as_slice()
-    }
 }
 
 impl internal::Generics for FunctionSignature {
@@ -130,9 +127,6 @@ pub struct FunctionBody {
 impl internal::Annotations for FunctionBody {
     fn annotations_mut(&mut self) -> &mut Vec<String> {
         &mut self.annotations
-    }
-    fn annotations(&self) -> &[String] {
-        self.annotations.as_slice()
     }
 }
 
@@ -189,14 +183,8 @@ impl internal::InnerAndOuterAnnotations for Function {
     fn inner_annotations_mut(&mut self) -> &mut Vec<String> {
         self.body.annotations_mut()
     }
-    fn inner_annotations(&self) -> &[String] {
-        self.body.annotations()
-    }
     fn outer_annotations_mut(&mut self) -> &mut Vec<String> {
         self.signature.annotations_mut()
-    }
-    fn outer_annotations(&self) -> &[String] {
-        self.signature.annotations()
     }
 }
 
@@ -241,9 +229,6 @@ impl Parameter {
 impl internal::Annotations for Parameter {
     fn annotations_mut(&mut self) -> &mut Vec<String> {
         &mut self.annotations
-    }
-    fn annotations(&self) -> &[String] {
-        self.annotations.as_slice()
     }
 }
 

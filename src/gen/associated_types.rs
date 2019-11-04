@@ -31,17 +31,11 @@ impl internal::Annotations for AssociatedTypeDeclaration {
     fn annotations_mut(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }
-    fn annotations(&self) -> &[String] {
-        self.annotations.as_slice()
-    }
 }
 
 impl internal::TraitBounds for AssociatedTypeDeclaration {
     fn trait_bounds_mut(&mut self) -> &mut Vec<String> {
         &mut self.traits
-    }
-    fn trait_bounds(&self) -> &[String] {
-        self.traits.as_slice()
     }
 }
 
@@ -81,9 +75,6 @@ impl AssociatedTypeDefinition {
 impl internal::Annotations for AssociatedTypeDefinition {
     fn annotations_mut(&mut self) -> &mut Vec<String> {
         &mut self.annotations
-    }
-    fn annotations(&self) -> &[String] {
-        self.annotations.as_slice()
     }
 }
 

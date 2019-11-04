@@ -38,9 +38,6 @@ impl internal::Fields for Struct {
     fn fields_mut(&mut self) -> &mut Vec<Field> {
         &mut self.fields
     }
-    fn fields(&self) -> &[Field] {
-        self.fields.as_slice()
-    }
 }
 
 impl internal::Generics for Struct {
@@ -55,9 +52,6 @@ impl internal::Generics for Struct {
 impl internal::Docs for Struct {
     fn docs_mut(&mut self) -> &mut Vec<String> {
         &mut self.docs
-    }
-    fn docs(&self) -> &[String] {
-        self.docs.as_slice()
     }
 }
 

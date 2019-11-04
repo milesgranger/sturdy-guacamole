@@ -51,17 +51,11 @@ impl internal::Annotations for Field {
     fn annotations_mut(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }
-    fn annotations(&self) -> &[String] {
-        self.annotations.as_slice()
-    }
 }
 
 impl internal::Docs for Field {
     fn docs_mut(&mut self) -> &mut Vec<String> {
         &mut self.docs
-    }
-    fn docs(&self) -> &[String] {
-        self.docs.as_slice()
     }
 }
 
