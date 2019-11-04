@@ -1,5 +1,5 @@
 //!
-//! Create `enum` objects
+//! Create annotation objects using the `Annotation` enum.
 //!
 //!
 //! Example
