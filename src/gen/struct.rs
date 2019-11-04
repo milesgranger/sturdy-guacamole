@@ -15,7 +15,7 @@ pub struct Struct {
     name: String,
     fields: Vec<Field>,
     generics: Vec<Generic>,
-    docs: Vec<Annotation>,
+    docs: Vec<String>,
 }
 
 impl Struct {
@@ -50,7 +50,7 @@ impl internal::Generics for Struct {
 }
 
 impl internal::Docs for Struct {
-    fn docs(&mut self) -> &mut Vec<Annotation> {
+    fn docs(&mut self) -> &mut Vec<String> {
         &mut self.docs
     }
 }
@@ -58,7 +58,7 @@ impl internal::Docs for Struct {
 impl SrcCode for Struct {
     fn generate(&self) -> String {
         let template = r#"
-        {{ docs | join(sep="
+        {{ struct.docs | join(sep="
         ") }}
         {% if struct.is_pub %}pub {% endif %}struct {{ struct.name }}{{ generics }}
         {
@@ -67,7 +67,6 @@ impl SrcCode for Struct {
         "#;
         let mut context = Context::new();
         context.insert("struct", &self);
-        context.insert("docs", &self.docs.to_src_vec());
         context.insert("fields", &self.fields.to_src_vec());
         context.insert("generics", &self.generics.generate());
         Tera::one_off(template, &context, false).unwrap()

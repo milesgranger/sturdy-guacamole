@@ -27,7 +27,7 @@ pub struct Field {
     is_pub: bool,
     ty: String,
     annotations: Vec<Annotation>,
-    docs: Vec<Annotation>,
+    docs: Vec<String>,
 }
 
 impl Field {
@@ -54,7 +54,7 @@ impl internal::Annotations for Field {
 }
 
 impl internal::Docs for Field {
-    fn docs(&mut self) -> &mut Vec<Annotation> {
+    fn docs(&mut self) -> &mut Vec<String> {
         &mut self.docs
     }
 }
@@ -62,14 +62,13 @@ impl internal::Docs for Field {
 impl SrcCode for Field {
     fn generate(&self) -> String {
         let template = r#"
-            {{ docs | join(sep="
+            {{ field.docs | join(sep="
             ") }}
             {% for annotation in annotations %}{{ annotation }}{% endfor %}
             {% if field.is_pub %}pub{% endif %} {{ field.name }}: {{ field.ty }},
         "#;
         let mut context = Context::new();
         context.insert("field", &self);
-        context.insert("docs", &self.docs.to_src_vec());
         context.insert("annotations", &self.annotations.to_src_vec());
         Tera::one_off(template, &context, false).unwrap()
     }

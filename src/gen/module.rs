@@ -65,7 +65,7 @@ pub struct Module {
     structs: Vec<Struct>,
     impls: Vec<Impl>,
     enums: Vec<Enum>,
-    docs: Vec<Annotation>,
+    docs: Vec<String>,
     sub_modules: Vec<Module>,
     inner_annotations: Vec<Annotation>,
     outer_annotations: Vec<Annotation>,
@@ -133,7 +133,7 @@ impl internal::InnerAndOuterAnnotations for Module {
 }
 
 impl internal::Docs for Module {
-    fn docs(&mut self) -> &mut Vec<Annotation> {
+    fn docs(&mut self) -> &mut Vec<String> {
         &mut self.docs
     }
 }
@@ -147,7 +147,7 @@ impl SrcCode for Module {
         {
             {{ inner_annotations | join(sep="
             ") }}
-            {% for doc in docs %}{{ doc }}{% endfor %}
+            {% for doc in self.docs %}{{ doc }}{% endfor %}
 
             {% for stmt in self.use_stmts %}{{ stmt }}{% endfor %}
             {% for obj in objs %}{{ obj }}{% endfor %}
@@ -157,7 +157,6 @@ impl SrcCode for Module {
 
         let mut ctx = Context::new();
         ctx.insert("self", &self);
-        ctx.insert("docs", &self.docs.to_src_vec());
         ctx.insert("outer_annotations", &self.outer_annotations.to_src_vec());
         ctx.insert("inner_annotations", &self.inner_annotations.to_src_vec());
 

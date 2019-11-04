@@ -20,32 +20,20 @@ use serde::{Deserialize, Serialize};
 /// Represents a single Rust annotation to a module, function, etc.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Annotation {
-    /// Annotation representing an attribute for type. ie. `#[foo(bar)]`
-    Attr(String),
-    /// Annotation representing a comment. ie. `// foo`
-    Comment(String),
-    /// Annotation representing a doc string. ie. `/// documentation`
-    Doc(String),
-    /// Annotation representing a module attribute. ie. `#![warn(...)]`
-    ModuleAttr(String),
-    /// Annotation representing a module level doc string. ie. `//! module documentation`
-    ModuleDoc(String),
+    /// Annotation representing an attribute for an item. ie. `#[foo(bar)]`
+    ItemAttr(String),
+    /// Annotation representing a scoped level attribute. ie. `#![warn(...)]`
+    ScopeAttr(String),
 }
 
 impl<S: ToString> From<S> for Annotation {
     fn from(annotation: S) -> Self {
         let annotation = annotation.to_string();
 
-        if annotation.starts_with("//!") {
-            Annotation::ModuleDoc(annotation)
-        } else if annotation.starts_with("///") {
-            Annotation::Doc(annotation)
-        } else if annotation.starts_with("//") {
-            Annotation::Comment(annotation)
-        } else if annotation.starts_with("#!") {
-            Annotation::ModuleAttr(annotation)
+        if annotation.starts_with("#!") {
+            Annotation::ScopeAttr(annotation)
         } else if annotation.starts_with('#') {
-            Annotation::Attr(annotation)
+            Annotation::ItemAttr(annotation)
         } else {
             panic!("No Annotation match for '{}'", annotation)
         }
@@ -55,11 +43,7 @@ impl<S: ToString> From<S> for Annotation {
 impl SrcCode for Annotation {
     fn generate(&self) -> String {
         match self {
-            Annotation::Attr(s)
-            | Annotation::Comment(s)
-            | Annotation::Doc(s)
-            | Annotation::ModuleAttr(s)
-            | Annotation::ModuleDoc(s) => s.to_owned(),
+            Annotation::ScopeAttr(s) | Annotation::ItemAttr(s) => s.to_owned(),
         }
     }
 }
