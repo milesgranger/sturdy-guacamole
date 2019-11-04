@@ -123,17 +123,17 @@ impl Module {
 }
 
 impl internal::InnerAndOuterAnnotations for Module {
-    fn inner_annotations(&mut self) -> &mut Vec<Annotation> {
+    fn inner_annotations_mut(&mut self) -> &mut Vec<Annotation> {
         &mut self.inner_annotations
     }
 
-    fn outer_annotations(&mut self) -> &mut Vec<Annotation> {
+    fn outer_annotations_mut(&mut self) -> &mut Vec<Annotation> {
         &mut self.outer_annotations
     }
 }
 
 impl internal::Docs for Module {
-    fn docs(&mut self) -> &mut Vec<String> {
+    fn docs_mut(&mut self) -> &mut Vec<String> {
         &mut self.docs
     }
 }

@@ -20,7 +20,7 @@ pub trait AnnotationExt {
 impl<T: Annotations> AnnotationExt for T {
     /// Add a single annotation.
     fn add_annotation(&mut self, annotation: impl Into<Annotation>) -> &mut Self {
-        self.annotations().push(annotation.into());
+        self.annotations_mut().push(annotation.into());
         self
     }
 
@@ -29,7 +29,7 @@ impl<T: Annotations> AnnotationExt for T {
         &mut self,
         annotations: impl IntoIterator<Item = impl Into<Annotation>>,
     ) -> &mut Self {
-        self.annotations()
+        self.annotations_mut()
             .extend(annotations.into_iter().map(|a| a.into()));
         self
     }
@@ -59,7 +59,7 @@ pub trait InnerAndOuterAnnotationExt {
 impl<T: InnerAndOuterAnnotations> InnerAndOuterAnnotationExt for T {
     /// Add a single inner annotation.
     fn add_inner_annotation(&mut self, annotation: impl Into<Annotation>) -> &mut Self {
-        self.inner_annotations().push(annotation.into());
+        self.inner_annotations_mut().push(annotation.into());
         self
     }
 
@@ -68,14 +68,14 @@ impl<T: InnerAndOuterAnnotations> InnerAndOuterAnnotationExt for T {
         &mut self,
         annotations: impl IntoIterator<Item = impl Into<Annotation>>,
     ) -> &mut Self {
-        self.inner_annotations()
+        self.inner_annotations_mut()
             .extend(annotations.into_iter().map(|a| a.into()));
         self
     }
 
     /// Add a single outer annotation.
     fn add_outer_annotation(&mut self, annotation: impl Into<Annotation>) -> &mut Self {
-        self.outer_annotations().push(annotation.into());
+        self.outer_annotations_mut().push(annotation.into());
         self
     }
 
@@ -84,7 +84,7 @@ impl<T: InnerAndOuterAnnotations> InnerAndOuterAnnotationExt for T {
         &mut self,
         annotations: impl IntoIterator<Item = impl Into<Annotation>>,
     ) -> &mut Self {
-        self.outer_annotations()
+        self.outer_annotations_mut()
             .extend(annotations.into_iter().map(|a| a.into()));
         self
     }
