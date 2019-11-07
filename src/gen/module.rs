@@ -12,8 +12,8 @@
 //!     .add_function(Function::new("foo"))
 //!     .add_struct(Struct::new("Thingy"))
 //!     .add_impl(Impl::new("Thingy"))
-//!     .add_outer_annotation("#[special_outer_annotation]")
-//!     .add_inner_annotation("#![special_inner_annotation]")
+//!     .add_annotation("#[special_outer_annotation]")
+//!     .add_annotation("#![special_inner_annotation]")
 //!     .add_doc("//! Module level docs")
 //!     .to_owned();
 //!
@@ -67,8 +67,7 @@ pub struct Module {
     enums: Vec<Enum>,
     docs: Vec<String>,
     sub_modules: Vec<Module>,
-    inner_annotations: Vec<Annotation>,
-    outer_annotations: Vec<Annotation>,
+    annotations: Vec<Annotation>,
     use_stmts: Vec<String>,
 }
 
@@ -122,13 +121,9 @@ impl Module {
     }
 }
 
-impl internal::InnerAndOuterAnnotations for Module {
-    fn inner_annotations_mut(&mut self) -> &mut Vec<Annotation> {
-        &mut self.inner_annotations
-    }
-
-    fn outer_annotations_mut(&mut self) -> &mut Vec<Annotation> {
-        &mut self.outer_annotations
+impl internal::Annotations for Module {
+    fn annotations_mut(&mut self) -> &mut Vec<Annotation> {
+        &mut self.annotations
     }
 }
 
@@ -141,11 +136,11 @@ impl internal::Docs for Module {
 impl SrcCode for Module {
     fn generate(&self) -> String {
         let template = r#"
-        {{ outer_annotations | join(sep="
+        {{ item_annotations | join(sep="
         ") }}
         {% if self.is_pub %}pub {% endif %}mod {{ self.name }}
         {
-            {{ inner_annotations | join(sep="
+            {{ scope_annotations | join(sep="
             ") }}
             {% for doc in self.docs %}{{ doc }}{% endfor %}
 
@@ -157,9 +152,28 @@ impl SrcCode for Module {
 
         let mut ctx = Context::new();
         ctx.insert("self", &self);
-        ctx.insert("outer_annotations", &self.outer_annotations.to_src_vec());
-        ctx.insert("inner_annotations", &self.inner_annotations.to_src_vec());
-
+        ctx.insert(
+            "item_annotations",
+            &self
+                .annotations
+                .iter()
+                .filter_map(|ann| match ann {
+                    Annotation::ItemAttr(a) => Some(a),
+                    Annotation::ScopeAttr(_) => None,
+                })
+                .collect::<Vec<&String>>(),
+        );
+        ctx.insert(
+            "scope_annotations",
+            &self
+                .annotations
+                .iter()
+                .filter_map(|ann| match ann {
+                    Annotation::ItemAttr(_) => None,
+                    Annotation::ScopeAttr(a) => Some(a),
+                })
+                .collect::<Vec<&String>>(),
+        );
         let mut objs: Vec<String> = vec![];
         self.traits.iter().for_each(|v| objs.push(v.generate()));
         self.functions.iter().for_each(|v| objs.push(v.generate()));

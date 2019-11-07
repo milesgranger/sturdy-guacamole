@@ -2,7 +2,7 @@
 //! Traits for annotations
 //!
 
-use crate::internal::{Annotations, InnerAndOuterAnnotations};
+use crate::internal::Annotations;
 use crate::Annotation;
 
 /// Provides methods to add annotations to elements.
@@ -30,61 +30,6 @@ impl<T: Annotations> AnnotationExt for T {
         annotations: impl IntoIterator<Item = impl Into<Annotation>>,
     ) -> &mut Self {
         self.annotations_mut()
-            .extend(annotations.into_iter().map(|a| a.into()));
-        self
-    }
-}
-
-/// Provides methods to add inner and outer annotations to elements.
-pub trait InnerAndOuterAnnotationExt {
-    /// Add a single inner annotation.
-    fn add_inner_annotation(&mut self, annotation: impl Into<Annotation>) -> &mut Self;
-
-    /// Add multiple inner annotations at once.
-    fn add_inner_annotations(
-        &mut self,
-        annotations: impl IntoIterator<Item = impl Into<Annotation>>,
-    ) -> &mut Self;
-
-    /// Add a single outer annotation.
-    fn add_outer_annotation(&mut self, annotation: impl Into<Annotation>) -> &mut Self;
-
-    /// Add multiple outer annotations at once.
-    fn add_outer_annotations(
-        &mut self,
-        annotations: impl IntoIterator<Item = impl Into<Annotation>>,
-    ) -> &mut Self;
-}
-
-impl<T: InnerAndOuterAnnotations> InnerAndOuterAnnotationExt for T {
-    /// Add a single inner annotation.
-    fn add_inner_annotation(&mut self, annotation: impl Into<Annotation>) -> &mut Self {
-        self.inner_annotations_mut().push(annotation.into());
-        self
-    }
-
-    /// Add multiple inner annotations at once.
-    fn add_inner_annotations(
-        &mut self,
-        annotations: impl IntoIterator<Item = impl Into<Annotation>>,
-    ) -> &mut Self {
-        self.inner_annotations_mut()
-            .extend(annotations.into_iter().map(|a| a.into()));
-        self
-    }
-
-    /// Add a single outer annotation.
-    fn add_outer_annotation(&mut self, annotation: impl Into<Annotation>) -> &mut Self {
-        self.outer_annotations_mut().push(annotation.into());
-        self
-    }
-
-    /// Add multiple outer annotations at once.
-    fn add_outer_annotations(
-        &mut self,
-        annotations: impl IntoIterator<Item = impl Into<Annotation>>,
-    ) -> &mut Self {
-        self.outer_annotations_mut()
             .extend(annotations.into_iter().map(|a| a.into()));
         self
     }

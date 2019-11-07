@@ -6,13 +6,6 @@ pub trait Annotations {
     fn annotations_mut(&mut self) -> &mut Vec<Annotation>;
 }
 
-/// Internal trait to get access to the container storing the inner and outer annotations.
-/// Used for the generic implementation of `InnerAndOuterAnnotationExt`
-pub trait InnerAndOuterAnnotations {
-    fn inner_annotations_mut(&mut self) -> &mut Vec<Annotation>;
-    fn outer_annotations_mut(&mut self) -> &mut Vec<Annotation>;
-}
-
 /// Internal trait to get access to the container storing the fields.
 /// Used for the generic implementation of `FieldExt`
 pub trait Fields {

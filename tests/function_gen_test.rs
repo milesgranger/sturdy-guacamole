@@ -138,10 +138,10 @@ fn function_gen_parameter_annotations() {
 #[test]
 fn function_with_annotations() {
     let function = Function::new("foo")
-        .add_outer_annotation("#[foo]")
-        .add_outer_annotation("#[bar]")
-        .add_inner_annotation("#![foo]")
-        .add_inner_annotation("#![bar]")
+        .add_annotation("#[foo]")
+        .add_annotation("#[bar]")
+        .add_body_annotation("#![foo]")
+        .add_body_annotation("#![bar]")
         .set_body("//body")
         .to_owned();
 

@@ -9,9 +9,9 @@
 use serde::Serialize;
 use tera::{Context, Tera};
 
-use crate::internal::{Annotations, Generics};
+use crate::internal::Generics;
 use crate::traits::SrcCode;
-use crate::{internal, Annotation, Generic, SrcCodeVec};
+use crate::{internal, Annotation, AnnotationExt, Generic, SrcCodeVec};
 
 /// Represents a function or method. Determined if any `Parameter` contains `self`
 #[derive(Default, Serialize, Clone)]
@@ -160,7 +160,6 @@ impl Function {
             ..Self::default()
         }
     }
-
     /// Add a new parameter to this function
     pub fn add_parameter(&mut self, param: Parameter) -> &mut Self {
         self.signature.parameters.push(param);
@@ -186,13 +185,15 @@ impl Function {
         self.body.body = body.to_string();
         self
     }
+    /// Add an annotation before the body of the function
+    pub fn add_body_annotation(&mut self, annotation: impl Into<Annotation>) -> &mut Self {
+        self.body.add_annotation(annotation);
+        self
+    }
 }
 
-impl internal::InnerAndOuterAnnotations for Function {
-    fn inner_annotations_mut(&mut self) -> &mut Vec<Annotation> {
-        self.body.annotations_mut()
-    }
-    fn outer_annotations_mut(&mut self) -> &mut Vec<Annotation> {
+impl internal::Annotations for Function {
+    fn annotations_mut(&mut self) -> &mut Vec<Annotation> {
         self.signature.annotations_mut()
     }
 }
