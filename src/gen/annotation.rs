@@ -26,6 +26,7 @@ pub enum Annotation {
     ScopeAttr(String),
 }
 
+// TODO: Use TryFrom when https://github.com/rust-lang/rust/issues/50133 is resolved.
 impl<S: ToString> From<S> for Annotation {
     fn from(annotation: S) -> Self {
         let annotation = annotation.to_string();
