@@ -109,18 +109,18 @@ fn function_with_async() {
 }
 
 #[test]
-fn function_gen_parameter_annotations() {
+fn function_gen_parameter_attributes() {
     let function = Function::new("foo")
         .set_is_pub(true)
         .add_parameter(
             Parameter::new("bar1", "usize")
-                .add_annotation("#[foo]")
+                .add_attribute("#[foo]")
                 .to_owned(),
         )
         .add_parameter(
             Parameter::new("bar2", "&str")
-                .add_annotation("#[foo]")
-                .add_annotation("#[bar]")
+                .add_attribute("#[foo]")
+                .add_attribute("#[bar]")
                 .to_owned(),
         )
         .to_owned();
@@ -136,12 +136,12 @@ fn function_gen_parameter_annotations() {
 }
 
 #[test]
-fn function_with_annotations() {
+fn function_with_attributes() {
     let function = Function::new("foo")
-        .add_annotation("#[foo]")
-        .add_annotation("#[bar]")
-        .add_body_annotation("#![foo]")
-        .add_body_annotation("#![bar]")
+        .add_attribute("#[foo]")
+        .add_attribute("#[bar]")
+        .add_body_attribute("#![foo]")
+        .add_body_attribute("#![bar]")
         .set_body("//body")
         .to_owned();
 

@@ -26,7 +26,7 @@ pub struct Field {
     name: String,
     is_pub: bool,
     ty: String,
-    annotations: Vec<Annotation>,
+    attributes: Vec<Attribute>,
     docs: Vec<String>,
 }
 
@@ -47,9 +47,9 @@ impl Field {
     }
 }
 
-impl internal::Annotations for Field {
-    fn annotations_mut(&mut self) -> &mut Vec<Annotation> {
-        &mut self.annotations
+impl internal::Attributes for Field {
+    fn attributes_mut(&mut self) -> &mut Vec<Attribute> {
+        &mut self.attributes
     }
 }
 
@@ -64,12 +64,12 @@ impl SrcCode for Field {
         let template = r#"
             {{ field.docs | join(sep="
             ") }}
-            {% for annotation in annotations %}{{ annotation }}{% endfor %}
+            {% for attribute in attributes %}{{ attribute }}{% endfor %}
             {% if field.is_pub %}pub{% endif %} {{ field.name }}: {{ field.ty }},
         "#;
         let mut context = Context::new();
         context.insert("field", &self);
-        context.insert("annotations", &self.annotations.to_src_vec());
+        context.insert("attributes", &self.attributes.to_src_vec());
         Tera::one_off(template, &context, false).unwrap()
     }
 }

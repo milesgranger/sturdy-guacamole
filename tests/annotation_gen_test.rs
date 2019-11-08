@@ -1,24 +1,24 @@
 pub mod utilities;
-use proffer::{Annotation, SrcCode};
+use proffer::{Attribute, SrcCode};
 
 #[test]
-fn test_annotation_attr() {
+fn test_attribute_attr() {
     let ann = "#[attr]";
-    let annotation = Annotation::from(ann);
-    match &annotation {
-        &Annotation::ItemAttr(ref s) => assert_eq!(&s, &ann),
-        _ => panic!("Expected to match to Annotation::ItemAttr, got {:?}", ann),
+    let attribute = Attribute::from(ann);
+    match &attribute {
+        &Attribute::ItemAttr(ref s) => assert_eq!(&s, &ann),
+        _ => panic!("Expected to match to Attribute::ItemAttr, got {:?}", ann),
     };
-    assert_eq!(&annotation.generate(), ann);
+    assert_eq!(&attribute.generate(), ann);
 }
 
 #[test]
-fn test_annotation_mod_attr() {
+fn test_attribute_mod_attr() {
     let ann = "#![foo_attr]";
-    let annotation = Annotation::from(ann);
-    match &annotation {
-        &Annotation::ScopeAttr(ref s) => assert_eq!(&s, &ann),
-        _ => panic!("Expected to match to Annotation::ScopeAttr, got {:?}", ann),
+    let attribute = Attribute::from(ann);
+    match &attribute {
+        &Attribute::ScopeAttr(ref s) => assert_eq!(&s, &ann),
+        _ => panic!("Expected to match to Attribute::ScopeAttr, got {:?}", ann),
     };
-    assert_eq!(&annotation.generate(), ann);
+    assert_eq!(&attribute.generate(), ann);
 }

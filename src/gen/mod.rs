@@ -1,7 +1,7 @@
 //! Re-exports from the `gen` submodules.
 
-pub mod annotation;
 pub mod associated_types;
+pub mod attribute;
 pub mod r#enum;
 pub mod field;
 pub mod function;
@@ -11,8 +11,8 @@ pub mod module;
 pub mod r#struct;
 pub mod r#trait;
 
-pub use annotation::*;
 pub use associated_types::*;
+pub use attribute::*;
 pub use field::*;
 pub use function::*;
 pub use generics::*;

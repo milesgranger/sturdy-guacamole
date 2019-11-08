@@ -12,18 +12,18 @@
 //!     .add_function(Function::new("foo"))
 //!     .add_struct(Struct::new("Thingy"))
 //!     .add_impl(Impl::new("Thingy"))
-//!     .add_annotation("#[special_outer_annotation]")
-//!     .add_annotation("#![special_inner_annotation]")
+//!     .add_attribute("#[special_outer_attribute]")
+//!     .add_attribute("#![special_inner_attribute]")
 //!     .add_doc("//! Module level docs")
 //!     .to_owned();
 //!
 //! let src_code = m.generate();
 //!
 //!  let expected = r#"
-//!      #[special_outer_annotation]
+//!      #[special_outer_attribute]
 //!      pub mod foo
 //!      {
-//!          #![special_inner_annotation]
+//!          #![special_inner_attribute]
 //!          //! Module level docs
 //!
 //!          trait Bar
@@ -67,7 +67,7 @@ pub struct Module {
     enums: Vec<Enum>,
     docs: Vec<String>,
     sub_modules: Vec<Module>,
-    annotations: Vec<Annotation>,
+    attributes: Vec<Attribute>,
     use_stmts: Vec<String>,
 }
 
@@ -121,9 +121,9 @@ impl Module {
     }
 }
 
-impl internal::Annotations for Module {
-    fn annotations_mut(&mut self) -> &mut Vec<Annotation> {
-        &mut self.annotations
+impl internal::Attributes for Module {
+    fn attributes_mut(&mut self) -> &mut Vec<Attribute> {
+        &mut self.attributes
     }
 }
 
@@ -136,11 +136,11 @@ impl internal::Docs for Module {
 impl SrcCode for Module {
     fn generate(&self) -> String {
         let template = r#"
-        {{ item_annotations | join(sep="
+        {{ item_attributes | join(sep="
         ") }}
         {% if self.is_pub %}pub {% endif %}mod {{ self.name }}
         {
-            {{ scope_annotations | join(sep="
+            {{ scope_attributes | join(sep="
             ") }}
             {% for doc in self.docs %}{{ doc }}{% endfor %}
 
@@ -153,24 +153,24 @@ impl SrcCode for Module {
         let mut ctx = Context::new();
         ctx.insert("self", &self);
         ctx.insert(
-            "item_annotations",
+            "item_attributes",
             &self
-                .annotations
+                .attributes
                 .iter()
                 .filter_map(|ann| match ann {
-                    Annotation::ItemAttr(a) => Some(a),
-                    Annotation::ScopeAttr(_) => None,
+                    Attribute::ItemAttr(a) => Some(a),
+                    Attribute::ScopeAttr(_) => None,
                 })
                 .collect::<Vec<&String>>(),
         );
         ctx.insert(
-            "scope_annotations",
+            "scope_attributes",
             &self
-                .annotations
+                .attributes
                 .iter()
                 .filter_map(|ann| match ann {
-                    Annotation::ItemAttr(_) => None,
-                    Annotation::ScopeAttr(a) => Some(a),
+                    Attribute::ItemAttr(_) => None,
+                    Attribute::ScopeAttr(a) => Some(a),
                 })
                 .collect::<Vec<&String>>(),
         );

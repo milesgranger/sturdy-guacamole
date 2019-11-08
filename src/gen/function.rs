@@ -11,7 +11,7 @@ use tera::{Context, Tera};
 
 use crate::internal::Generics;
 use crate::traits::SrcCode;
-use crate::{internal, Annotation, AnnotationExt, Generic, SrcCodeVec};
+use crate::{internal, Attribute, AttributeExt, Generic, SrcCodeVec};
 
 /// Represents a function or method. Determined if any `Parameter` contains `self`
 #[derive(Default, Serialize, Clone)]
@@ -29,7 +29,7 @@ pub struct FunctionSignature {
     parameters: Vec<Parameter>,
     generics: Vec<Generic>,
     return_ty: Option<String>,
-    annotations: Vec<Annotation>,
+    attributes: Vec<Attribute>,
 }
 
 impl FunctionSignature {
@@ -72,9 +72,9 @@ impl FunctionSignature {
     }
 }
 
-impl internal::Annotations for FunctionSignature {
-    fn annotations_mut(&mut self) -> &mut Vec<Annotation> {
-        &mut self.annotations
+impl internal::Attributes for FunctionSignature {
+    fn attributes_mut(&mut self) -> &mut Vec<Attribute> {
+        &mut self.attributes
     }
 }
 
@@ -90,7 +90,7 @@ impl internal::Generics for FunctionSignature {
 impl SrcCode for FunctionSignature {
     fn generate(&self) -> String {
         let template = r#"
-        {{ annotations | join(sep="
+        {{ attributes | join(sep="
         ") }}
         {% if self.is_pub %}pub {% endif %}{% if self.is_async %}async {% endif %}fn {{ self.name }}{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %}({{ parameters | join(sep=", ") }}) -> {{ return_ty }}{% if has_generics %}
             where
@@ -112,7 +112,7 @@ impl SrcCode for FunctionSignature {
                 .map(|g| g.name())
                 .collect::<Vec<&str>>(),
         );
-        context.insert("annotations", &self.annotations.to_src_vec());
+        context.insert("attributes", &self.attributes.to_src_vec());
         context.insert("parameters", &self.parameters.to_src_vec());
         Tera::one_off(template, &context, false).unwrap()
     }
@@ -122,30 +122,30 @@ impl SrcCode for FunctionSignature {
 #[derive(Default, Serialize, Clone)]
 pub struct FunctionBody {
     body: String,
-    annotations: Vec<Annotation>,
+    attributes: Vec<Attribute>,
 }
 
-impl internal::Annotations for FunctionBody {
-    fn annotations_mut(&mut self) -> &mut Vec<Annotation> {
-        &mut self.annotations
+impl internal::Attributes for FunctionBody {
+    fn attributes_mut(&mut self) -> &mut Vec<Attribute> {
+        &mut self.attributes
     }
 }
 
 impl SrcCode for FunctionBody {
     fn generate(&self) -> String {
         let template = r#"
-            {{ annotations | join(sep="
+            {{ attributes | join(sep="
             ") }}
             {{ self.body }}
         "#;
         let mut ctx = Context::new();
         ctx.insert("self", &self);
         ctx.insert(
-            "annotations",
+            "attributes",
             &self
-                .annotations
+                .attributes
                 .iter()
-                .map(|a| a.generate())
+                .map(SrcCode::generate)
                 .collect::<Vec<String>>(),
         );
         Tera::one_off(template, &ctx, false).unwrap()
@@ -185,16 +185,16 @@ impl Function {
         self.body.body = body.to_string();
         self
     }
-    /// Add an annotation before the body of the function
-    pub fn add_body_annotation(&mut self, annotation: impl Into<Annotation>) -> &mut Self {
-        self.body.add_annotation(annotation);
+    /// Add an attribute before the body of the function
+    pub fn add_body_attribute(&mut self, attribute: impl Into<Attribute>) -> &mut Self {
+        self.body.add_attribute(attribute);
         self
     }
 }
 
-impl internal::Annotations for Function {
-    fn annotations_mut(&mut self) -> &mut Vec<Annotation> {
-        self.signature.annotations_mut()
+impl internal::Attributes for Function {
+    fn attributes_mut(&mut self) -> &mut Vec<Attribute> {
+        self.signature.attributes_mut()
     }
 }
 
@@ -212,7 +212,7 @@ impl internal::Generics for Function {
 pub struct Parameter {
     name: String,
     ty: String,
-    annotations: Vec<Annotation>,
+    attributes: Vec<Attribute>,
 }
 impl Parameter {
     /// Create a new parameter
@@ -236,18 +236,18 @@ impl Parameter {
     }
 }
 
-impl internal::Annotations for Parameter {
-    fn annotations_mut(&mut self) -> &mut Vec<Annotation> {
-        &mut self.annotations
+impl internal::Attributes for Parameter {
+    fn attributes_mut(&mut self) -> &mut Vec<Attribute> {
+        &mut self.attributes
     }
 }
 
 impl SrcCode for Parameter {
     fn generate(&self) -> String {
-        let template = "{% for annotation in annotations %}{{ annotation }} {% endfor %}{{ self.name }}: {{ self.ty }}";
+        let template = "{% for attribute in attributes %}{{ attribute }} {% endfor %}{{ self.name }}: {{ self.ty }}";
         let mut ctx = Context::new();
         ctx.insert("self", &self);
-        ctx.insert("annotations", &self.annotations.to_src_vec());
+        ctx.insert("attributes", &self.attributes.to_src_vec());
         Tera::one_off(template, &ctx, false).unwrap()
     }
 }
