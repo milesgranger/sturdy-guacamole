@@ -144,7 +144,7 @@ impl SrcCode for FunctionSignature {
 /// Represents the function/method's body
 #[derive(Default, Serialize, Clone)]
 pub struct FunctionBody {
-    body: String,
+    body: Vec<String>,
     attributes: Vec<Attribute>,
 }
 
@@ -159,7 +159,8 @@ impl SrcCode for FunctionBody {
         let template = r#"
             {{ attributes | join(sep="
             ") }}
-            {{ self.body }}
+            {{ self.body | join(sep="
+            ") }}
         "#;
         let mut ctx = Context::new();
         ctx.insert("self", &self);
@@ -204,8 +205,13 @@ impl Function {
         self
     }
     /// Set the body of the function, this should be valid Rust source code syntax.
-    pub fn set_body(&mut self, body: impl ToString) -> &mut Self {
-        self.body.body = body.to_string();
+    pub fn set_body(&mut self, body: impl SrcCode) -> &mut Self {
+        self.body.body = vec![body.generate()];
+        self
+    }
+    /// Push anything which implements `SrcCode` into the body of the function
+    pub fn push_into_body(&mut self, src: impl SrcCode) -> &mut Self {
+        self.body.body.push(src.generate());
         self
     }
     /// Add an attribute before the body of the function
