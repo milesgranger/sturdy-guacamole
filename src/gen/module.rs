@@ -216,7 +216,7 @@ impl SrcCode for Module {
                 .sub_modules
                 .values()
                 .map(|m| m.generate())
-                .collect::<String>(),
+                .collect::<Vec<String>>(),
         );
         Tera::one_off(template, &ctx, false).unwrap()
     }
