@@ -54,7 +54,9 @@ use serde::Serialize;
 use tera::{Context, Tera};
 
 use crate::*;
+use std::borrow::Borrow;
 use std::collections::HashMap;
+use std::hash::Hash;
 
 /// Represent a module of code
 ///
@@ -110,12 +112,20 @@ impl Module {
         self
     }
     /// Get a mutable reference to a submodule of this module
-    pub fn get_submodule_mut(&mut self, name: impl ToString) -> Option<&mut Module> {
-        self.sub_modules.get_mut(&name.to_string())
+    pub fn get_submodule_mut<Q>(&mut self, name: &Q) -> Option<&mut Module>
+    where
+        String: Borrow<Q>,
+        Q: ?Sized + Hash + Eq,
+    {
+        self.sub_modules.get_mut(name)
     }
     /// Get a reference to a submodule of this module.
-    pub fn get_submodule(&self, name: impl ToString) -> Option<&Module> {
-        self.sub_modules.get(&name.to_string())
+    pub fn get_submodule<Q>(&self, name: &Q) -> Option<&Module>
+    where
+        String: Borrow<Q>,
+        Q: ?Sized + Hash + Eq,
+    {
+        self.sub_modules.get(name)
     }
     /// Add a function to the module
     pub fn add_function(&mut self, func: Function) -> &mut Self {
